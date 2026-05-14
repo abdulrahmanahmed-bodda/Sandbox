@@ -547,38 +547,36 @@
     function tryOpen() {
       if (window.fcWidget && window.fcWidget.isInitialized()) {
 
-        /* Set user properties — visible to agent in contact info panel */
+        /* Map flow as user custom properties — visible in agent contact panel */
         try {
           window.fcWidget.user.setProperties({
-            pre_chat_topic:    flowPath[0] || 'General',
-            pre_chat_subtopic: flowPath[1] || '',
-            pre_chat_detail:   flowPath[2] || '',
-            pre_chat_full_path: flowSummary
+            cf_pre_chat_topic:     flowPath[0] || 'General',
+            cf_pre_chat_subtopic:  flowPath[1] || '',
+            cf_pre_chat_detail:    flowPath[2] || '',
+            cf_pre_chat_path:      flowSummary
           });
         } catch(e) {}
 
-        /* Set conversation tags so agents can filter/route */
+        /* Open widget with flow summary pre-filled as the first message */
         try {
-          var tag = (flowPath[0] || 'general').toLowerCase().replace(/\s+/g, '-');
-          window.fcWidget.setTags([tag, 'pre-chat-flow']);
-        } catch(e) {}
+          window.fcWidget.open({
+            replyText: flowSummary
+          });
+        } catch(e) {
+          window.fcWidget.open();
+        }
 
         window.fcWidget.show();
-        window.fcWidget.open();
 
-        /* Send flow as first message from user so agent sees it immediately */
-        setTimeout(function() {
-          try {
-            window.fcWidget.send({
-              text: '--- Pre-chat flow ---\n' + flowPath.map(function(s, i) {
-                return (i + 1) + '. ' + s;
-              }).join('\n') + '\n---------------------'
-            });
-          } catch(e) {
-            /* Fallback: try track event */
-            try { window.fcWidget.track('pre_chat_flow', { path: flowSummary }); } catch(e2) {}
-          }
-        }, 800);
+        /* Also send as a system/private note via track event */
+        try {
+          window.fcWidget.track('pre_chat_flow_completed', {
+            topic:    flowPath[0] || '',
+            subtopic: flowPath[1] || '',
+            detail:   flowPath[2] || '',
+            full_path: flowSummary
+          });
+        } catch(e) {}
 
         window.fcWidget.on('widget:closed', function() {
           window.fcWidget.hide();
