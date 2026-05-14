@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaByte — Modern Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #2a2a3a;
+      --accent: #7c5cfc;
+      --accent2: #fc5c7d;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --card: #16161f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(10,10,15,0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.9rem;
+      letter-spacing: 0.04em; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #fff;
+      border: none; padding: 0.6rem 1.4rem;
+      border-radius: 6px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      font-weight: 500; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 40%, rgba(124,92,252,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(252,92,125,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(124,92,252,0.12);
+      border: 1px solid rgba(124,92,252,0.35);
+      color: var(--accent); border-radius: 99px;
+      padding: 0.35rem 1rem; font-size: 0.8rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: clamp(2.8rem, 7vw, 5.5rem);
+      line-height: 1.05; letter-spacing: -0.02em;
+      max-width: 820px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent) 30%, var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      margin-top: 1.5rem; max-width: 520px;
+      color: var(--muted); font-size: 1.05rem; line-height: 1.7;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; margin-top: 2.5rem;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #5a3fcc);
+      color: #fff; border: none;
+      padding: 0.85rem 2rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.85rem 2rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); background: rgba(124,92,252,0.07); }
+
+    /* grid decoration */
+    .grid-bg {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
+      background-image:
+        linear-gradient(var(--text) 1px, transparent 1px),
+        linear-gradient(90deg, var(--text) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex; justify-content: center; gap: 4rem;
+      padding: 2.5rem 2rem; flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Syne', sans-serif; font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+    /* ── FEATURES ── */
+    .section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--muted); max-width: 480px; line-height: 1.7; margin-bottom: 3rem; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.25s, transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .feature-card:hover::before { opacity: 1; }
+    .feat-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: rgba(124,92,252,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 1rem;
+    }
+    .feat-title {
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-size: 1rem; margin-bottom: 0.5rem;
+    }
+    .feat-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .plan {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 2rem;
+      transition: border-color 0.2s;
+    }
+    .plan.featured {
+      border-color: var(--accent);
+      background: linear-gradient(160deg, rgba(124,92,252,0.08), var(--card));
+    }
+    .plan-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .plan-price {
+      font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800;
+      margin: 0.5rem 0;
+    }
+    .plan-price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .plan-desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+    .plan-features { list-style: none; margin-bottom: 1.75rem; }
+    .plan-features li {
+      font-size: 0.875rem; padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border); color: var(--muted);
+    }
+    .plan-features li::before { content: '✓  '; color: var(--accent); font-weight: 700; }
+    .plan-btn {
+      width: 100%; padding: 0.75rem;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s;
+    }
+    .plan-btn:hover { opacity: 0.85; }
+    .plan-btn.outline {
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+    }
+    .plan-btn.outline:hover { border-color: var(--accent); }
+
+    /* ── FAQ ── */
+    .faq-list { margin-top: 2rem; }
+    .faq-item {
+      border-bottom: 1px solid var(--border); padding: 1.25rem 0;
+    }
+    .faq-q {
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-size: 1rem; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-a { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-top: 0.75rem; }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(252,92,125,0.08));
+      border: 1px solid rgba(124,92,252,0.2);
+      border-radius: 16px;
+      padding: 4rem 3rem; text-align: center;
+      margin: 2rem auto; max-width: 1100px;
+    }
+    .cta-band h2 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(1.6rem, 4vw, 2.5rem); margin-bottom: 1rem;
+    }
+    .cta-band p { color: var(--muted); max-width: 420px; margin: 0 auto 2rem; line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    footer .logo { font-size: 1rem; }
+    footer p { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── FRESHCHAT NOTICE ── */
+    .fc-notice {
+      position: fixed; bottom: 90px; right: 24px;
+      background: var(--surface); border: 1px solid var(--accent);
+      border-radius: 10px; padding: 0.75rem 1rem;
+      font-size: 0.8rem; color: var(--muted);
+      max-width: 240px; line-height: 1.5; z-index: 50;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: slideIn 0.5s 2s ease both;
+    }
+    .fc-notice strong { color: var(--accent); display: block; margin-bottom: 0.25rem; }
+    .fc-notice .close {
+      position: absolute; top: 6px; right: 10px;
+      color: var(--muted); cursor: pointer; font-size: 1rem;
+    }
+
+    /* ── CONFIG PANEL ── */
+    .config-panel {
+      position: fixed; top: 80px; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+      padding: 1.25rem;
+      width: 280px; z-index: 200;
+      font-size: 0.85rem;
+      box-shadow: -4px 0 30px rgba(0,0,0,0.3);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .config-panel.open { transform: translateX(0); }
+    .config-tab {
+      position: absolute; left: -38px; top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      background: var(--accent); color: #fff;
+      border: none; padding: 0.4rem 0.75rem;
+      border-radius: 6px 6px 0 0; cursor: pointer;
+      font-size: 0.75rem; letter-spacing: 0.05em;
+      white-space: nowrap; font-family: 'Syne', sans-serif; font-weight: 600;
+    }
+    .config-panel h3 {
+      font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+      margin-bottom: 1rem; color: var(--text);
+    }
+    .cfg-label { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.3rem; margin-top: 0.75rem; }
+    .cfg-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.5rem 0.75rem;
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      outline: none;
+    }
+    .cfg-input:focus { border-color: var(--accent); }
+    .cfg-apply {
+      margin-top: 1rem; width: 100%;
+      background: var(--accent); color: #fff; border: none;
+      padding: 0.6rem; border-radius: 6px;
+      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .cfg-apply:hover { opacity: 0.85; }
+    .cfg-note { color: var(--muted); font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.5; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">NovaByte</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Get Started</button>
+</nav>
+
+<!-- FRESHCHAT CONFIG PANEL -->
+<div class="config-panel" id="configPanel">
+  <button class="config-tab" onclick="toggleConfig()">⚙ Freshchat</button>
+  <h3>🔌 Freshchat Config</h3>
+  <div class="cfg-label">Token (required)</div>
+  <input class="cfg-input" id="fcToken" placeholder="your-widget-token" />
+  <div class="cfg-label">Host (optional)</div>
+  <input class="cfg-input" id="fcHost" placeholder="https://wchat.freshchat.com" value="https://wchat.freshchat.com" />
+  <div class="cfg-label">Bot Name</div>
+  <input class="cfg-input" id="fcName" placeholder="Support Bot" value="Support Bot" />
+  <button class="cfg-apply" onclick="loadFreshchat()">Load Widget</button>
+  <p class="cfg-note">Paste your Freshchat widget token from your Freshchat admin → Admin → Web Messenger.</p>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="badge">🚀 Now in public beta</div>
+  <h1>Build faster with <span>intelligent</span> infrastructure</h1>
+  <p class="hero-sub">NovaByte gives your team the tools to ship, scale, and support customers without slowing down.</p>
+  <div class="hero-actions">
+    <button class="btn-primary">Start for free</button>
+    <button class="btn-ghost">Watch demo →</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">12K+</div><div class="stat-label">Active Users</div></div>
+  <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label">Uptime SLA</div></div>
+  <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Customer Rating</div></div>
+  <div class="stat"><div class="stat-num">&lt;2s</div><div class="stat-label">Avg. Response</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-label">Platform</div>
+  <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
+  <p class="section-sub">Purpose-built tools that integrate seamlessly so you can focus on shipping great products.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">Instant Deploys</div>
+      <div class="feat-desc">Push to production in under 30 seconds with zero-downtime blue-green deployments.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🛡️</div>
+      <div class="feat-title">Enterprise Security</div>
+      <div class="feat-desc">SOC 2 Type II, end-to-end encryption, and granular role-based access controls.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Real-time Analytics</div>
+      <div class="feat-desc">Live dashboards for usage, performance, and customer behaviour across every touchpoint.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">💬</div>
+      <div class="feat-title">Live Chat Support</div>
+      <div class="feat-desc">Embedded Freshchat widget so customers get answers instantly — no email queues.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔗</div>
+      <div class="feat-title">100+ Integrations</div>
+      <div class="feat-desc">Connect Slack, GitHub, Jira, HubSpot and more with one-click OAuth flows.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">AI Automation</div>
+      <div class="feat-desc">Route tickets, draft replies, and flag anomalies automatically with built-in ML models.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Simple, transparent plans</h2>
+  <p class="section-sub">No surprise fees. Cancel anytime. Switch plans as you grow.</p>
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price">$0<span>/mo</span></div>
+      <div class="plan-desc">Perfect for side projects and early-stage testing.</div>
+      <ul class="plan-features">
+        <li>Up to 3 team members</li>
+        <li>5 GB storage</li>
+        <li>Community support</li>
+        <li>Basic analytics</li>
+      </ul>
+      <button class="plan-btn outline">Get started free</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-name">Pro ✦</div>
+      <div class="plan-price">$49<span>/mo</span></div>
+      <div class="plan-desc">For growing teams who need more power and priority support.</div>
+      <ul class="plan-features">
+        <li>Unlimited team members</li>
+        <li>100 GB storage</li>
+        <li>Priority live chat</li>
+        <li>Advanced analytics</li>
+        <li>Custom integrations</li>
+      </ul>
+      <button class="plan-btn">Start Pro trial</button>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-price">Custom</div>
+      <div class="plan-desc">Tailored for large organisations with specific compliance needs.</div>
+      <ul class="plan-features">
+        <li>SSO & SAML</li>
+        <li>Dedicated infrastructure</li>
+        <li>SLA guarantees</li>
+        <li>Dedicated CSM</li>
+      </ul>
+      <button class="plan-btn outline">Contact sales</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">Common questions</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How do I integrate Freshchat on my site? <span>+</span></div>
+      <div class="faq-a" style="display:none">Click the ⚙ Freshchat tab on the right, paste your widget token, and hit Load Widget. The chat bubble will appear in the bottom corner.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for Pro? <span>+</span></div>
+      <div class="faq-a" style="display:none">Yes — you get 14 days of Pro free, no credit card required. You'll be downgraded to Starter automatically if you don't upgrade.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I use this page as a Freshchat sandbox? <span>+</span></div>
+      <div class="faq-a" style="display:none">Absolutely. That's the purpose — paste your token in the config panel and the real Freshchat widget will load so you can test flows, bot responses, and routing rules.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What data does the widget collect? <span>+</span></div>
+      <div class="faq-a" style="display:none">Only what you configure — name, email, and conversation history. All data is routed through your Freshchat account per their privacy policy.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band" id="contact">
+  <h2>Ready to get started?</h2>
+  <p>Join thousands of teams already building with NovaByte. Chat with us right now using the widget below.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <button class="btn-primary" onclick="openChat()">💬 Chat with us</button>
+    <button class="btn-ghost">Book a demo</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">NovaByte</div>
+  <p>© 2026 NovaByte Inc. — Sandbox demo for Freshchat widget testing.</p>
+</footer>
+
+<!-- FRESHCHAT NOTICE -->
+<div class="fc-notice" id="fcNotice">
+  <span class="close" onclick="this.parentElement.remove()">×</span>
+  <strong>👋 Freshchat Sandbox</strong>
+  Open the ⚙ panel on the right and paste your widget token to load the live chat widget.
+</div>
+
+<script>
+  /* ── Config panel toggle ── */
+  function toggleConfig() {
+    document.getElementById('configPanel').classList.toggle('open');
+  }
+
+  /* ── Load Freshchat widget dynamically ── */
+  function loadFreshchat() {
+    const token = document.getElementById('fcToken').value.trim();
+    const host  = document.getElementById('fcHost').value.trim() || 'https://wchat.freshchat.com';
+    const name  = document.getElementById('fcName').value.trim() || 'Support Bot';
+
+    if (!token) {
+      alert('Please enter your Freshchat widget token.');
+      return;
+    }
+
+    // Remove existing widget if re-loading
+    const existing = document.getElementById('fc-script');
+    if (existing) existing.remove();
+    if (window.fcWidget) {
+      try { window.fcWidget.destroy(); } catch(e) {}
+    }
+
+    // Freshchat init config
+    window.fcSettings = {
+      token: token,
+      host: host,
+      config: {
+        headerProperty: {
+          appName: name,
+          backgroundColor: '#7c5cfc',
+          foregroundColor: '#ffffff'
+        }
+      }
+    };
+
+    const script = document.createElement('script');
+    script.id  = 'fc-script';
+    script.src = host + '/js/widget.js';
+    script.async = true;
+    script.onload = function() {
+      console.log('✅ Freshchat widget loaded');
+      document.getElementById('fcNotice') && document.getElementById('fcNotice').remove();
+      toggleConfig();
+    };
+    script.onerror = function() {
+      alert('⚠️ Could not load the Freshchat widget. Check your token and host URL.');
+    };
+    document.body.appendChild(script);
+  }
+
+  /* ── Open chat programmatically ── */
+  function openChat() {
+    if (window.fcWidget && window.fcWidget.open) {
+      window.fcWidget.open();
+    } else {
+      toggleConfig();
+      alert('Please load the Freshchat widget first using the ⚙ config panel.');
+    }
+  }
+
+  /* ── FAQ accordion ── */
+  function toggleFaq(el) {
+    const answer = el.nextElementSibling;
+    const icon   = el.querySelector('span');
+    const isOpen = answer.style.display === 'block';
+    answer.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '+' : '−';
+  }
+
+  /* Auto-open config panel after short delay for first visit */
+  setTimeout(() => {
+    document.getElementById('configPanel').classList.add('open');
+  }, 3000);
+</script>
+
+<!-- Freshworks Widget -->
+<script>
+  window.fwSettings={
+    'widget_id':11000000000566
+  };
+  !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
+</script>
+<script type='text/javascript' src='https://widget.freshworks.com/widgets/11000000000566.js' async defer></script>
+
+</body>
+</html>
