@@ -418,8 +418,36 @@
   function recordStep(label) { flowPath.push(label); }
 
   function buildFlowSummary() {
-    return 'Pre-chat flow: ' + flowPath.join(' > ');
+    var lines = ['[Pre-chat flow summary]'];
+    var labels = ['Topic', 'Question', 'Detail'];
+    flowPath.forEach(function(step, i) {
+      lines.push((labels[i] || 'Step ' + (i + 1)) + ': ' + step);
+    });
+    return lines.join('\n');
   }
+
+  var questionLabels = {
+    'track-order':         'How do I track my shipment?',
+    'lost-shipment':       'My shipment shows lost or stuck',
+    'status-not-updating': 'Tracking status not updating',
+    'schedule-pickup':     'How do I schedule a pickup?',
+    'missed-pickup':       'Courier did not show up for pickup',
+    'pickup-cutoff':       'What is the pickup cutoff time?',
+    'wrong-address':       'Delivered to wrong address',
+    'damaged':             'Package arrived damaged',
+    'initiate-return':     'How do I initiate a return?',
+    'return-status':       'Track my return shipment',
+    'return-policy':       'What is your return policy?',
+    'invoice':             'Where can I find my invoice?',
+    'pricing':             'How is shipping cost calculated?',
+    'dispute':             'I want to dispute a charge',
+    'api-docs':            'Where are the API docs?',
+    'webhook':             'How do webhooks work?',
+    'api-error':           'I am getting API errors',
+    'reset-password':      'Reset my password',
+    'add-user':            'Add a team member to my account',
+    'contract':            'Questions about my contract'
+  };
 
   var answers = {
     'track-order':         { text: 'Log in to your Bosta dashboard and go to Shipments then Tracking. Enter your AWB number to see real-time status updates and courier location.', back: 'shipment' },
@@ -485,7 +513,7 @@
   function showAnswer(key) {
     var a = answers[key];
     if (!a) return;
-    recordStep(key.replace(/-/g, ' '));
+    recordStep(questionLabels[key] || key.replace(/-/g, ' '));
     document.getElementById('answer-text').textContent = a.text;
     document.getElementById('answer-back-btn').setAttribute('data-back', a.back);
     document.getElementById('answer-breadcrumb').innerHTML =
@@ -560,7 +588,7 @@
         window.fcWidget.show();
         window.fcWidget.open();
 
-        /* Force-send the flow summary as first message — no customer action needed */
+        /* Force-send flow summary — retry until widget conversation is ready */
         var attempts = 0;
         var sendInterval = setInterval(function() {
           attempts++;
@@ -568,9 +596,9 @@
             window.fcWidget.send({ text: flowSummary });
             clearInterval(sendInterval);
           } catch(e) {
-            if (attempts >= 10) clearInterval(sendInterval);
+            if (attempts >= 20) clearInterval(sendInterval);
           }
-        }, 500);
+        }, 300);
 
         window.fcWidget.on('widget:closed', function() {
           window.fcWidget.hide();
