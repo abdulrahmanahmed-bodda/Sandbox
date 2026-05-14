@@ -565,10 +565,30 @@
   fcStyle.textContent = '#fc_frame:not(.fc-open){display:none!important}.fc-widget-btn{display:none!important}';
   document.head.appendChild(fcStyle);
 
+  var FC_API_TOKEN = "eyJraWQiOiJjdXN0b20tb2F1dGgta2V5aWQiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmcmVzaGNoYXQiLCJhdWQiOiJmcmVzaGNoYXQiLCJpYXQiOjE3Nzg3OTQ5NDMsInNjb3BlIjoiYWdlbnQ6cmVhZCBhZ2VudDpjcmVhdGUgYWdlbnQ6dXBkYXRlIGFnZW50OmRlbGV0ZSBjb252ZXJzYXRpb246Y3JlYXRlIGNvbnZlcnNhdGlvbjpyZWFkIGNvbnZlcnNhdGlvbjp1cGRhdGUgbWVzc2FnZTpjcmVhdGUgbWVzc2FnZTpnZXQgYmlsbGluZzp1cGRhdGUgcmVwb3J0czpmZXRjaCByZXBvcnRzOmV4dHJhY3QgcmVwb3J0czpyZWFkIHJlcG9ydHM6ZXh0cmFjdDpyZWFkIGFjY291bnQ6cmVhZCBkYXNoYm9hcmQ6cmVhZCB1c2VyOnJlYWQgdXNlcjpjcmVhdGUgdXNlcjp1cGRhdGUgdXNlcjpkZWxldGUgb3V0Ym91bmRtZXNzYWdlOnNlbmQgb3V0Ym91bmRtZXNzYWdlOmdldCBtZXNzYWdpbmctY2hhbm5lbHM6bWVzc2FnZTpzZW5kIG1lc3NhZ2luZy1jaGFubmVsczptZXNzYWdlOmdldCBtZXNzYWdpbmctY2hhbm5lbHM6dGVtcGxhdGU6Y3JlYXRlIG1lc3NhZ2luZy1jaGFubmVsczp0ZW1wbGF0ZTpnZXQgZmlsdGVyaW5ib3g6cmVhZCBmaWx0ZXJpbmJveDpjb3VudDpyZWFkIHJvbGU6cmVhZCBpbWFnZTp1cGxvYWQiLCJ0eXAiOiJCZWFyZXIiLCJjbGllbnRJZCI6ImZjLTdmOGZmNDFmLTAwN2ItNDA0YS05ZDI1LWYwOGMzZDBkYjUyNCIsInN1YiI6ImZhMWJjMDg1LWMwODktNGFkMS04YzdiLWMxMzBhY2U2MjYzNyIsImp0aSI6ImVhOTEzOGQxLTZhYzAtNDg4OC1hYmE4LTA3NmRhNmY4NGM0ZCIsImV4cCI6MjA5NDQxNDE0M30.OShqwfrNQT-ayCRBWLUpjx-nmPd885txPSgUtP1IQK4";
+  var FC_API_HOST  = "https://api.freshchat.com";
+
+  function sendFlowViaAPI(conversationId, flowSummary) {
+    fetch(FC_API_HOST + '/v2/conversations/' + conversationId + '/messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + FC_API_TOKEN,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message_type: 'normal',
+        actor_type: 'system',
+        message_parts: [{ text: { content: flowSummary } }]
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { console.log('Flow sent via API:', d); })
+    .catch(function(e) { console.error('Flow API error:', e); });
+  }
+
   window.openFreshchat = function(flowSummary) {
     function doOpen() {
 
-      /* Set user meta */
       try {
         window.fcWidget.user.setMeta({
           pre_chat_topic:    flowPath[0] || '',
@@ -577,33 +597,35 @@
         });
       } catch(e) {}
 
-      /* Open on correct topic */
       try { window.fcWidget.open({ topic: 'Chat with us' }); }
       catch(e) { window.fcWidget.open(); }
 
       window.fcWidget.show();
 
-      /* Send on widget:opened — conversation exists at this point */
-      var sent = false;
-      function trySend() {
-        if (sent) return;
-        try {
-          window.fcWidget.send({ text: flowSummary });
-          sent = true;
-        } catch(e) {}
-      }
-
+      /* Use conversation:created to get the real conversation ID then POST via API */
       try {
-        window.fcWidget.on('widget:opened', function() {
-          setTimeout(trySend, 1000);
-          setTimeout(trySend, 2000);
-          setTimeout(trySend, 3500);
+        window.fcWidget.on('conversation:created', function(resp) {
+          var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
+          if (convId) {
+            setTimeout(function() { sendFlowViaAPI(convId, flowSummary); }, 500);
+          } else {
+            console.log('conversation:created full response:', JSON.stringify(resp));
+          }
         });
       } catch(e) {}
 
-      /* Hard fallback regardless of events */
-      setTimeout(trySend, 2000);
-      setTimeout(trySend, 4000);
+      /* Fallback: try getConversationId() after widget opens */
+      try {
+        window.fcWidget.on('widget:opened', function() {
+          setTimeout(function() {
+            try {
+              window.fcWidget.getConversationId().then(function(convId) {
+                if (convId) sendFlowViaAPI(convId, flowSummary);
+              }).catch(function() {});
+            } catch(e) {}
+          }, 1000);
+        });
+      } catch(e) {}
 
       window.fcWidget.on('widget:closed', function() {
         window.fcWidget.hide();
