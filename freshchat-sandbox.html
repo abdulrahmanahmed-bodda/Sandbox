@@ -289,6 +289,7 @@
 
     /* ── CONFIG PANEL ── */
     .config-panel {
+      display: none;
       position: fixed; top: 80px; right: 0;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -357,19 +358,7 @@
   <button class="nav-cta">Get Started</button>
 </nav>
 
-<!-- FRESHCHAT CONFIG PANEL -->
-<div class="config-panel" id="configPanel">
-  <button class="config-tab" onclick="toggleConfig()">⚙ Freshchat</button>
-  <h3>🔌 Freshchat Config</h3>
-  <div class="cfg-label">Token (required)</div>
-  <input class="cfg-input" id="fcToken" placeholder="your-widget-token" />
-  <div class="cfg-label">Host (optional)</div>
-  <input class="cfg-input" id="fcHost" placeholder="https://wchat.freshchat.com" value="https://wchat.freshchat.com" />
-  <div class="cfg-label">Bot Name</div>
-  <input class="cfg-input" id="fcName" placeholder="Support Bot" value="Support Bot" />
-  <button class="cfg-apply" onclick="loadFreshchat()">Load Widget</button>
-  <p class="cfg-note">Paste your Freshchat widget token from your Freshchat admin → Admin → Web Messenger.</p>
-</div>
+
 
 <!-- HERO -->
 <section class="hero">
@@ -505,7 +494,7 @@
   <h2>Ready to get started?</h2>
   <p>Join thousands of teams already building with NovaByte. Chat with us right now using the widget below.</p>
   <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-    <button class="btn-primary" onclick="openChat()">💬 Chat with us</button>
+    <button class="btn-primary" onclick="openPrechat()">💬 Chat with us</button>
     <button class="btn-ghost">Book a demo</button>
   </div>
 </div>
@@ -516,75 +505,7 @@
   <p>© 2026 NovaByte Inc. — Sandbox demo for Freshchat widget testing.</p>
 </footer>
 
-<!-- FRESHCHAT NOTICE -->
-<div class="fc-notice" id="fcNotice">
-  <span class="close" onclick="this.parentElement.remove()">×</span>
-  <strong>👋 Freshchat Sandbox</strong>
-  Open the ⚙ panel on the right and paste your widget token to load the live chat widget.
-</div>
-
 <script>
-  /* ── Config panel toggle ── */
-  function toggleConfig() {
-    document.getElementById('configPanel').classList.toggle('open');
-  }
-
-  /* ── Load Freshchat widget dynamically ── */
-  function loadFreshchat() {
-    const token = document.getElementById('fcToken').value.trim();
-    const host  = document.getElementById('fcHost').value.trim() || 'https://wchat.freshchat.com';
-    const name  = document.getElementById('fcName').value.trim() || 'Support Bot';
-
-    if (!token) {
-      alert('Please enter your Freshchat widget token.');
-      return;
-    }
-
-    // Remove existing widget if re-loading
-    const existing = document.getElementById('fc-script');
-    if (existing) existing.remove();
-    if (window.fcWidget) {
-      try { window.fcWidget.destroy(); } catch(e) {}
-    }
-
-    // Freshchat init config
-    window.fcSettings = {
-      token: token,
-      host: host,
-      config: {
-        headerProperty: {
-          appName: name,
-          backgroundColor: '#7c5cfc',
-          foregroundColor: '#ffffff'
-        }
-      }
-    };
-
-    const script = document.createElement('script');
-    script.id  = 'fc-script';
-    script.src = host + '/js/widget.js';
-    script.async = true;
-    script.onload = function() {
-      console.log('✅ Freshchat widget loaded');
-      document.getElementById('fcNotice') && document.getElementById('fcNotice').remove();
-      toggleConfig();
-    };
-    script.onerror = function() {
-      alert('⚠️ Could not load the Freshchat widget. Check your token and host URL.');
-    };
-    document.body.appendChild(script);
-  }
-
-  /* ── Open chat programmatically ── */
-  function openChat() {
-    if (window.fcWidget && window.fcWidget.open) {
-      window.fcWidget.open();
-    } else {
-      toggleConfig();
-      alert('Please load the Freshchat widget first using the ⚙ config panel.');
-    }
-  }
-
   /* ── FAQ accordion ── */
   function toggleFaq(el) {
     const answer = el.nextElementSibling;
@@ -593,11 +514,6 @@
     answer.style.display = isOpen ? 'none' : 'block';
     icon.textContent = isOpen ? '+' : '−';
   }
-
-  /* Auto-open config panel after short delay for first visit */
-  setTimeout(() => {
-    document.getElementById('configPanel').classList.add('open');
-  }, 3000);
 </script>
 
 <!-- Pre-chat FAQ Flow + Freshchat -->
