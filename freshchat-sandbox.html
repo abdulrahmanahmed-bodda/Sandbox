@@ -561,55 +561,70 @@
 </script>
 
 <script>
-  window.fcSettings = {
-    token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
-    host: "https://wchat-fs.freshchat.com",
-    config: { hideFAB: true }
-  };
-
   var fcStyle = document.createElement('style');
   fcStyle.textContent = '#fc_frame:not(.fc-open){display:none!important}.fc-widget-btn{display:none!important}';
   document.head.appendChild(fcStyle);
 
   window.openFreshchat = function(flowSummary) {
-    function tryOpen() {
-      if (window.fcWidget && window.fcWidget.isInitialized()) {
+    function doOpen() {
 
-        /* Set user custom properties — visible in agent contact panel */
-        try {
-          window.fcWidget.user.setProperties({
-            cf_pre_chat_topic:    flowPath[0] || 'General',
-            cf_pre_chat_subtopic: flowPath[1] || '',
-            cf_pre_chat_detail:   flowPath[2] || '',
-            cf_pre_chat_path:     flowSummary
-          });
-        } catch(e) {}
+      /* 1. Set user meta — shows in agent contact panel */
+      try {
+        window.fcWidget.user.setMeta({
+          pre_chat_topic:    flowPath[0] || '',
+          pre_chat_question: flowPath[1] || '',
+          pre_chat_detail:   flowPath[2] || '',
+          pre_chat_path:     flowSummary
+        });
+      } catch(e) {}
 
-        window.fcWidget.show();
-        window.fcWidget.open();
+      /* 2. Listen for conversation:created then immediately send the summary */
+      try {
+        window.fcWidget.on('conversation:created', function() {
+          setTimeout(function() {
+            try { window.fcWidget.send({ text: flowSummary }); } catch(e) {}
+          }, 300);
+        });
+      } catch(e) {}
 
-        /* Force-send flow summary — retry until widget conversation is ready */
-        var attempts = 0;
-        var sendInterval = setInterval(function() {
-          attempts++;
+      /* 3. Also try sending after open with increasing delays as fallback */
+      window.fcWidget.show();
+      window.fcWidget.open();
+
+      var delays = [500, 1000, 1500, 2500];
+      var sent = false;
+      delays.forEach(function(delay) {
+        setTimeout(function() {
+          if (sent) return;
           try {
             window.fcWidget.send({ text: flowSummary });
-            clearInterval(sendInterval);
-          } catch(e) {
-            if (attempts >= 20) clearInterval(sendInterval);
-          }
-        }, 300);
+            sent = true;
+          } catch(e) {}
+        }, delay);
+      });
 
-        window.fcWidget.on('widget:closed', function() {
-          window.fcWidget.hide();
-          document.getElementById('fc-launcher').classList.remove('hidden');
-        });
-
-      } else {
-        setTimeout(tryOpen, 400);
-      }
+      window.fcWidget.on('widget:closed', function() {
+        window.fcWidget.hide();
+        document.getElementById('fc-launcher').classList.remove('hidden');
+      });
     }
-    tryOpen();
+
+    /* Wait for widget to be fully initialized */
+    var checks = 0;
+    var waitReady = setInterval(function() {
+      checks++;
+      if (window.fcWidget && window.fcWidget.isInitialized()) {
+        clearInterval(waitReady);
+        doOpen();
+      }
+      if (checks > 30) clearInterval(waitReady);
+    }, 300);
+  };
+
+  window.fcSettings = {
+    token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
+    host: "https://wchat-fs.freshchat.com",
+    config: { hideFAB: true }
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
