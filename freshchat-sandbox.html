@@ -573,40 +573,37 @@
         window.fcWidget.user.setMeta({
           pre_chat_topic:    flowPath[0] || '',
           pre_chat_question: flowPath[1] || '',
-          pre_chat_detail:   flowPath[2] || '',
           pre_chat_path:     flowSummary
         });
       } catch(e) {}
 
-      /* Open on the correct topic — must match EXACTLY your Freshchat topic name */
-      try {
-        window.fcWidget.open({ topic: 'Chat with us' });
-      } catch(e) {
-        window.fcWidget.open();
-      }
+      /* Open on correct topic */
+      try { window.fcWidget.open({ topic: 'Chat with us' }); }
+      catch(e) { window.fcWidget.open(); }
 
       window.fcWidget.show();
 
-      /* Send flow summary on conversation:created */
+      /* Send on widget:opened — conversation exists at this point */
+      var sent = false;
+      function trySend() {
+        if (sent) return;
+        try {
+          window.fcWidget.send({ text: flowSummary });
+          sent = true;
+        } catch(e) {}
+      }
+
       try {
-        window.fcWidget.on('conversation:created', function() {
-          setTimeout(function() {
-            try { window.fcWidget.send({ text: flowSummary }); } catch(e) {}
-          }, 500);
+        window.fcWidget.on('widget:opened', function() {
+          setTimeout(trySend, 1000);
+          setTimeout(trySend, 2000);
+          setTimeout(trySend, 3500);
         });
       } catch(e) {}
 
-      /* Fallback timed sends */
-      var sent = false;
-      [800, 1500, 2500, 4000].forEach(function(delay) {
-        setTimeout(function() {
-          if (sent) return;
-          try {
-            window.fcWidget.send({ text: flowSummary });
-            sent = true;
-          } catch(e) {}
-        }, delay);
-      });
+      /* Hard fallback regardless of events */
+      setTimeout(trySend, 2000);
+      setTimeout(trySend, 4000);
 
       window.fcWidget.on('widget:closed', function() {
         window.fcWidget.hide();
@@ -628,11 +625,7 @@
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
     host: "https://wchat-fs.freshchat.com",
-    config: {
-      hideFAB: true,
-      showFAQOnOpen: false,
-      open: false
-    }
+    config: { hideFAB: true, showFAQOnOpen: false, open: false }
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
