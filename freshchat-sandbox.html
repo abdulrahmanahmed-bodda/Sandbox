@@ -7,346 +7,110 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --border: #2a2a3a;
-      --accent: #7c5cfc;
-      --accent2: #fc5c7d;
-      --text: #e8e8f0;
-      --muted: #888899;
-      --card: #16161f;
+      --bg: #0a0a0f; --surface: #13131a; --border: #2a2a3a;
+      --accent: #7c5cfc; --accent2: #fc5c7d; --text: #e8e8f0; --muted: #888899; --card: #16161f;
     }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-    }
-
-    /* ── NAV ── */
+    body { background: var(--bg); color: var(--text); font-family: "DM Sans", sans-serif; font-weight: 300; overflow-x: hidden; }
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.25rem 3rem;
-      background: rgba(10,10,15,0.8);
-      backdrop-filter: blur(16px);
+      background: rgba(10,10,15,0.8); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 1.4rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .logo { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none; font-size: 0.9rem;
-      letter-spacing: 0.04em; transition: color 0.2s;
-    }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.04em; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
-    .nav-cta {
-      background: var(--accent); color: #fff;
-      border: none; padding: 0.6rem 1.4rem;
-      border-radius: 6px; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
-      font-weight: 500; transition: opacity 0.2s;
-    }
+    .nav-cta { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.4rem; border-radius: 6px; cursor: pointer; font-family: "DM Sans", sans-serif; font-size: 0.875rem; font-weight: 500; transition: opacity 0.2s; }
     .nav-cta:hover { opacity: 0.85; }
-
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 6rem 2rem 4rem;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 70% 50% at 20% 40%, rgba(124,92,252,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(252,92,125,0.12) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .badge {
-      display: inline-block;
-      background: rgba(124,92,252,0.12);
-      border: 1px solid rgba(124,92,252,0.35);
-      color: var(--accent); border-radius: 99px;
-      padding: 0.35rem 1rem; font-size: 0.8rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      animation: fadeUp 0.6s ease both;
-    }
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: clamp(2.8rem, 7vw, 5.5rem);
-      line-height: 1.05; letter-spacing: -0.02em;
-      max-width: 820px;
-      animation: fadeUp 0.6s 0.1s ease both;
-    }
-    h1 span {
-      background: linear-gradient(135deg, var(--accent) 30%, var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero-sub {
-      margin-top: 1.5rem; max-width: 520px;
-      color: var(--muted); font-size: 1.05rem; line-height: 1.7;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-    .hero-actions {
-      display: flex; gap: 1rem; margin-top: 2.5rem;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #5a3fcc);
-      color: #fff; border: none;
-      padding: 0.85rem 2rem; border-radius: 8px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
-      cursor: pointer; transition: transform 0.15s, opacity 0.15s;
-    }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6rem 2rem 4rem; position: relative; overflow: hidden; }
+    .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 20% 40%, rgba(124,92,252,0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 60%, rgba(252,92,125,0.12) 0%, transparent 60%); pointer-events: none; }
+    .grid-bg { position: absolute; inset: 0; pointer-events: none; opacity: 0.04; background-image: linear-gradient(var(--text) 1px, transparent 1px), linear-gradient(90deg, var(--text) 1px, transparent 1px); background-size: 60px 60px; }
+    .badge { display: inline-block; background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.35); color: var(--accent); border-radius: 99px; padding: 0.35rem 1rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeUp 0.6s ease both; }
+    h1 { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: 1.05; letter-spacing: -0.02em; max-width: 820px; animation: fadeUp 0.6s 0.1s ease both; }
+    h1 span { background: linear-gradient(135deg, var(--accent) 30%, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-sub { margin-top: 1.5rem; max-width: 520px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; animation: fadeUp 0.6s 0.2s ease both; }
+    .hero-actions { display: flex; gap: 1rem; margin-top: 2.5rem; animation: fadeUp 0.6s 0.3s ease both; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #5a3fcc); color: #fff; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: transform 0.15s, opacity 0.15s; }
     .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
-    .btn-ghost {
-      background: transparent; color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0.85rem 2rem; border-radius: 8px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-      cursor: pointer; transition: border-color 0.2s, background 0.2s;
-    }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.85rem 2rem; border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 0.95rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
     .btn-ghost:hover { border-color: var(--accent); background: rgba(124,92,252,0.07); }
-
-    /* grid decoration */
-    .grid-bg {
-      position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
-      background-image:
-        linear-gradient(var(--text) 1px, transparent 1px),
-        linear-gradient(90deg, var(--text) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    /* ── STATS ── */
-    .stats {
-      display: flex; justify-content: center; gap: 4rem;
-      padding: 2.5rem 2rem; flex-wrap: wrap;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.6s 0.4s ease both;
-    }
+    .stats { display: flex; justify-content: center; gap: 4rem; padding: 2.5rem 2rem; flex-wrap: wrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .stat { text-align: center; }
-    .stat-num {
-      font-family: 'Syne', sans-serif; font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .stat-num { font-family: "Syne", sans-serif; font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .stat-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.05em; margin-top: 0.25rem; }
-
-    /* ── FEATURES ── */
     .section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15;
-      margin-bottom: 1rem;
-    }
+    .section-label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+    .section-title { font-family: "Syne", sans-serif; font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 1rem; }
     .section-sub { color: var(--muted); max-width: 480px; line-height: 1.7; margin-bottom: 3rem; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-    .feature-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      transition: border-color 0.25s, transform 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      opacity: 0; transition: opacity 0.25s;
-    }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; transition: border-color 0.25s, transform 0.2s; position: relative; overflow: hidden; }
+    .feature-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.25s; }
     .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
     .feature-card:hover::before { opacity: 1; }
-    .feat-icon {
-      width: 42px; height: 42px; border-radius: 10px;
-      background: rgba(124,92,252,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; margin-bottom: 1rem;
-    }
-    .feat-title {
-      font-family: 'Syne', sans-serif; font-weight: 600;
-      font-size: 1rem; margin-bottom: 0.5rem;
-    }
+    .feat-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(124,92,252,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
+    .feat-title { font-family: "Syne", sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
     .feat-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
-
-    /* ── PRICING ── */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem; margin-top: 3rem;
-    }
-    .plan {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 2rem;
-      transition: border-color 0.2s;
-    }
-    .plan.featured {
-      border-color: var(--accent);
-      background: linear-gradient(160deg, rgba(124,92,252,0.08), var(--card));
-    }
-    .plan-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .plan-price {
-      font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800;
-      margin: 0.5rem 0;
-    }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .plan { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; transition: border-color 0.2s; }
+    .plan.featured { border-color: var(--accent); background: linear-gradient(160deg, rgba(124,92,252,0.08), var(--card)); }
+    .plan-name { font-family: "Syne", sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .plan-price { font-family: "Syne", sans-serif; font-size: 2.5rem; font-weight: 800; margin: 0.5rem 0; }
     .plan-price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
     .plan-desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
     .plan-features { list-style: none; margin-bottom: 1.75rem; }
-    .plan-features li {
-      font-size: 0.875rem; padding: 0.4rem 0;
-      border-bottom: 1px solid var(--border); color: var(--muted);
-    }
-    .plan-features li::before { content: '✓  '; color: var(--accent); font-weight: 700; }
-    .plan-btn {
-      width: 100%; padding: 0.75rem;
-      background: var(--accent); color: #fff; border: none;
-      border-radius: 8px; font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s;
-    }
+    .plan-features li { font-size: 0.875rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+    .plan-features li::before { content: "Check  "; color: var(--accent); font-weight: 700; }
+    .plan-btn { width: 100%; padding: 0.75rem; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s; }
     .plan-btn:hover { opacity: 0.85; }
-    .plan-btn.outline {
-      background: transparent; border: 1px solid var(--border); color: var(--text);
-    }
+    .plan-btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
     .plan-btn.outline:hover { border-color: var(--accent); }
-
-    /* ── FAQ ── */
     .faq-list { margin-top: 2rem; }
-    .faq-item {
-      border-bottom: 1px solid var(--border); padding: 1.25rem 0;
-    }
-    .faq-q {
-      font-family: 'Syne', sans-serif; font-weight: 600;
-      font-size: 1rem; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-    }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1.25rem 0; }
+    .faq-q { font-family: "Syne", sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .faq-a { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-top: 0.75rem; }
-
-    /* ── CTA BAND ── */
-    .cta-band {
-      background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(252,92,125,0.08));
-      border: 1px solid rgba(124,92,252,0.2);
-      border-radius: 16px;
-      padding: 4rem 3rem; text-align: center;
-      margin: 2rem auto; max-width: 1100px;
-    }
-    .cta-band h2 {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: clamp(1.6rem, 4vw, 2.5rem); margin-bottom: 1rem;
-    }
+    .cta-band { background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(252,92,125,0.08)); border: 1px solid rgba(124,92,252,0.2); border-radius: 16px; padding: 4rem 3rem; text-align: center; margin: 2rem auto; max-width: 1100px; }
+    .cta-band h2 { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(1.6rem, 4vw, 2.5rem); margin-bottom: 1rem; }
     .cta-band p { color: var(--muted); max-width: 420px; margin: 0 auto 2rem; line-height: 1.7; }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 1rem;
-    }
-    footer .logo { font-size: 1rem; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     footer p { color: var(--muted); font-size: 0.8rem; }
-
-    /* ── FRESHCHAT NOTICE ── */
-    .fc-notice {
-      position: fixed; bottom: 90px; right: 24px;
-      background: var(--surface); border: 1px solid var(--accent);
-      border-radius: 10px; padding: 0.75rem 1rem;
-      font-size: 0.8rem; color: var(--muted);
-      max-width: 240px; line-height: 1.5; z-index: 50;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      animation: slideIn 0.5s 2s ease both;
-    }
-    .fc-notice strong { color: var(--accent); display: block; margin-bottom: 0.25rem; }
-    .fc-notice .close {
-      position: absolute; top: 6px; right: 10px;
-      color: var(--muted); cursor: pointer; font-size: 1rem;
-    }
-
-    /* ── CONFIG PANEL ── */
-    .config-panel {
-      display: none;
-      position: fixed; top: 80px; right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-right: none;
-      border-radius: 12px 0 0 12px;
-      padding: 1.25rem;
-      width: 280px; z-index: 200;
-      font-size: 0.85rem;
-      box-shadow: -4px 0 30px rgba(0,0,0,0.3);
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-    }
-    .config-panel.open { transform: translateX(0); }
-    .config-tab {
-      position: absolute; left: -38px; top: 50%;
-      transform: translateY(-50%) rotate(-90deg);
-      background: var(--accent); color: #fff;
-      border: none; padding: 0.4rem 0.75rem;
-      border-radius: 6px 6px 0 0; cursor: pointer;
-      font-size: 0.75rem; letter-spacing: 0.05em;
-      white-space: nowrap; font-family: 'Syne', sans-serif; font-weight: 600;
-    }
-    .config-panel h3 {
-      font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
-      margin-bottom: 1rem; color: var(--text);
-    }
-    .cfg-label { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.3rem; margin-top: 0.75rem; }
-    .cfg-input {
-      width: 100%; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 0.5rem 0.75rem;
-      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-      outline: none;
-    }
-    .cfg-input:focus { border-color: var(--accent); }
-    .cfg-apply {
-      margin-top: 1rem; width: 100%;
-      background: var(--accent); color: #fff; border: none;
-      padding: 0.6rem; border-radius: 6px;
-      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; transition: opacity 0.2s;
-    }
-    .cfg-apply:hover { opacity: 0.85; }
-    .cfg-note { color: var(--muted); font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.5; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    /* Pre-chat styles */
+    #prechat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.55); align-items: flex-end; justify-content: flex-end; padding: 0 24px 90px; }
+    #prechat-overlay.show { display: flex; }
+    #prechat-box { width: 360px; background: #ffffff; border-radius: 16px; overflow: hidden; font-family: "DM Sans", sans-serif; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popUp 0.3s cubic-bezier(.4,0,.2,1); }
+    @keyframes popUp { from { opacity:0; transform: translateY(20px) scale(0.97); } to { opacity:1; transform: translateY(0) scale(1); } }
+    #prechat-header { background: linear-gradient(135deg, #7c5cfc, #5a3fcc); padding: 1.25rem 1.25rem 1rem; color: #fff; }
+    #prechat-header .brand { font-size: 0.75rem; opacity: 0.8; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
+    #prechat-header h3 { font-family: "Syne", sans-serif; font-size: 1.05rem; font-weight: 700; margin: 0 0 0.25rem; }
+    #prechat-header p { font-size: 0.8rem; opacity: 0.85; margin: 0; }
+    #prechat-close { float: right; background: rgba(255,255,255,0.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 1rem; cursor: pointer; line-height: 28px; text-align: center; margin-top: -4px; }
+    #prechat-body { padding: 1rem; max-height: 440px; overflow-y: auto; }
+    .faq-step { display: none; }
+    .faq-step.active { display: block; }
+    .step-label { font-size: 0.7rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .faq-btn { display: flex; align-items: center; gap: 0.6rem; width: 100%; text-align: left; background: #f7f7fb; border: 1px solid #e8e8f0; border-radius: 10px; padding: 0.65rem 0.85rem; font-family: "DM Sans", sans-serif; font-size: 0.85rem; color: #1a1a2e; cursor: pointer; margin-bottom: 0.5rem; transition: background 0.15s, border-color 0.15s; }
+    .faq-btn:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
+    .faq-btn .icon { font-size: 1.1rem; flex-shrink: 0; }
+    .answer-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 0.85rem 1rem; font-size: 0.85rem; color: #166534; line-height: 1.6; margin-bottom: 0.75rem; }
+    .prechat-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .btn-chat { flex: 1; background: linear-gradient(135deg, #7c5cfc, #5a3fcc); color: #fff; border: none; border-radius: 8px; padding: 0.65rem 1rem; font-family: "DM Sans", sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
+    .btn-chat:hover { opacity: 0.88; }
+    .btn-back { background: #f7f7fb; border: 1px solid #e8e8f0; color: #555; border-radius: 8px; padding: 0.65rem 1rem; font-family: "DM Sans", sans-serif; font-size: 0.85rem; cursor: pointer; }
+    .btn-back:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
+    #fc-launcher { position: fixed; bottom: 24px; right: 24px; z-index: 9998; background: linear-gradient(135deg, #7c5cfc, #5a3fcc); color: #fff; border: none; border-radius: 50px; padding: 0.75rem 1.4rem; font-family: "DM Sans", sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 20px rgba(124,92,252,0.45); display: flex; align-items: center; gap: 0.5rem; transition: transform 0.2s, opacity 0.2s; }
+    #fc-launcher:hover { transform: translateY(-2px); opacity: 0.92; }
+    #fc-launcher.hidden { display: none; }
+    .breadcrumb { font-size: 0.72rem; color: #aaa; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+    .breadcrumb span { color: #7c5cfc; cursor: pointer; }
+    .breadcrumb span:hover { text-decoration: underline; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="logo">NovaByte</div>
   <ul class="nav-links">
@@ -358,68 +122,38 @@
   <button class="nav-cta">Get Started</button>
 </nav>
 
-
-
-<!-- HERO -->
 <section class="hero">
   <div class="grid-bg"></div>
-  <div class="badge">🚀 Now in public beta</div>
+  <div class="badge">Rocket Now in public beta</div>
   <h1>Build faster with <span>intelligent</span> infrastructure</h1>
   <p class="hero-sub">NovaByte gives your team the tools to ship, scale, and support customers without slowing down.</p>
   <div class="hero-actions">
-    <button class="btn-primary">Start for free</button>
-    <button class="btn-ghost">Watch demo →</button>
+    <button class="btn-primary" onclick="openPrechat()">Chat with us</button>
+    <button class="btn-ghost">Watch demo</button>
   </div>
 </section>
 
-<!-- STATS -->
 <div class="stats">
   <div class="stat"><div class="stat-num">12K+</div><div class="stat-label">Active Users</div></div>
   <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label">Uptime SLA</div></div>
-  <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Customer Rating</div></div>
-  <div class="stat"><div class="stat-num">&lt;2s</div><div class="stat-label">Avg. Response</div></div>
+  <div class="stat"><div class="stat-num">4.8 Stars</div><div class="stat-label">Customer Rating</div></div>
+  <div class="stat"><div class="stat-num">Under 2s</div><div class="stat-label">Avg. Response</div></div>
 </div>
 
-<!-- FEATURES -->
 <section class="section" id="features">
   <div class="section-label">Platform</div>
   <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
   <p class="section-sub">Purpose-built tools that integrate seamlessly so you can focus on shipping great products.</p>
   <div class="features-grid">
-    <div class="feature-card">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-title">Instant Deploys</div>
-      <div class="feat-desc">Push to production in under 30 seconds with zero-downtime blue-green deployments.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">🛡️</div>
-      <div class="feat-title">Enterprise Security</div>
-      <div class="feat-desc">SOC 2 Type II, end-to-end encryption, and granular role-based access controls.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">📊</div>
-      <div class="feat-title">Real-time Analytics</div>
-      <div class="feat-desc">Live dashboards for usage, performance, and customer behaviour across every touchpoint.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">💬</div>
-      <div class="feat-title">Live Chat Support</div>
-      <div class="feat-desc">Embedded Freshchat widget so customers get answers instantly — no email queues.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">🔗</div>
-      <div class="feat-title">100+ Integrations</div>
-      <div class="feat-desc">Connect Slack, GitHub, Jira, HubSpot and more with one-click OAuth flows.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">🤖</div>
-      <div class="feat-title">AI Automation</div>
-      <div class="feat-desc">Route tickets, draft replies, and flag anomalies automatically with built-in ML models.</div>
-    </div>
+    <div class="feature-card"><div class="feat-icon">Flash</div><div class="feat-title">Instant Deploys</div><div class="feat-desc">Push to production in under 30 seconds with zero-downtime blue-green deployments.</div></div>
+    <div class="feature-card"><div class="feat-icon">Shield</div><div class="feat-title">Enterprise Security</div><div class="feat-desc">SOC 2 Type II, end-to-end encryption, and granular role-based access controls.</div></div>
+    <div class="feature-card"><div class="feat-icon">Chart</div><div class="feat-title">Real-time Analytics</div><div class="feat-desc">Live dashboards for usage, performance, and customer behaviour across every touchpoint.</div></div>
+    <div class="feature-card"><div class="feat-icon">Chat</div><div class="feat-title">Live Chat Support</div><div class="feat-desc">Embedded Freshchat widget so customers get answers instantly.</div></div>
+    <div class="feature-card"><div class="feat-icon">Link</div><div class="feat-title">100+ Integrations</div><div class="feat-desc">Connect Slack, GitHub, Jira, HubSpot and more with one-click OAuth flows.</div></div>
+    <div class="feature-card"><div class="feat-icon">Bot</div><div class="feat-title">AI Automation</div><div class="feat-desc">Route tickets, draft replies, and flag anomalies automatically with built-in ML models.</div></div>
   </div>
 </section>
 
-<!-- PRICING -->
 <section class="section" id="pricing">
   <div class="section-label">Pricing</div>
   <h2 class="section-title">Simple, transparent plans</h2>
@@ -429,385 +163,221 @@
       <div class="plan-name">Starter</div>
       <div class="plan-price">$0<span>/mo</span></div>
       <div class="plan-desc">Perfect for side projects and early-stage testing.</div>
-      <ul class="plan-features">
-        <li>Up to 3 team members</li>
-        <li>5 GB storage</li>
-        <li>Community support</li>
-        <li>Basic analytics</li>
-      </ul>
+      <ul class="plan-features"><li>Up to 3 team members</li><li>5 GB storage</li><li>Community support</li><li>Basic analytics</li></ul>
       <button class="plan-btn outline">Get started free</button>
     </div>
     <div class="plan featured">
-      <div class="plan-name">Pro ✦</div>
+      <div class="plan-name">Pro</div>
       <div class="plan-price">$49<span>/mo</span></div>
       <div class="plan-desc">For growing teams who need more power and priority support.</div>
-      <ul class="plan-features">
-        <li>Unlimited team members</li>
-        <li>100 GB storage</li>
-        <li>Priority live chat</li>
-        <li>Advanced analytics</li>
-        <li>Custom integrations</li>
-      </ul>
+      <ul class="plan-features"><li>Unlimited team members</li><li>100 GB storage</li><li>Priority live chat</li><li>Advanced analytics</li><li>Custom integrations</li></ul>
       <button class="plan-btn">Start Pro trial</button>
     </div>
     <div class="plan">
       <div class="plan-name">Enterprise</div>
       <div class="plan-price">Custom</div>
       <div class="plan-desc">Tailored for large organisations with specific compliance needs.</div>
-      <ul class="plan-features">
-        <li>SSO & SAML</li>
-        <li>Dedicated infrastructure</li>
-        <li>SLA guarantees</li>
-        <li>Dedicated CSM</li>
-      </ul>
+      <ul class="plan-features"><li>SSO and SAML</li><li>Dedicated infrastructure</li><li>SLA guarantees</li><li>Dedicated CSM</li></ul>
       <button class="plan-btn outline">Contact sales</button>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
 <section class="section" id="faq">
   <div class="section-label">FAQ</div>
   <h2 class="section-title">Common questions</h2>
   <div class="faq-list">
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">How do I integrate Freshchat on my site? <span>+</span></div>
-      <div class="faq-a" style="display:none">Click the ⚙ Freshchat tab on the right, paste your widget token, and hit Load Widget. The chat bubble will appear in the bottom corner.</div>
+      <div class="faq-a" style="display:none">Click the Chat with us button, select your topic, and follow the pre-chat flow. If you need an agent, the Freshchat widget will open automatically.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for Pro? <span>+</span></div>
-      <div class="faq-a" style="display:none">Yes — you get 14 days of Pro free, no credit card required. You'll be downgraded to Starter automatically if you don't upgrade.</div>
+      <div class="faq-a" style="display:none">Yes, you get 14 days of Pro free, no credit card required. You will be downgraded to Starter automatically if you do not upgrade.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">Can I use this page as a Freshchat sandbox? <span>+</span></div>
-      <div class="faq-a" style="display:none">Absolutely. That's the purpose — paste your token in the config panel and the real Freshchat widget will load so you can test flows, bot responses, and routing rules.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">What data does the widget collect? <span>+</span></div>
-      <div class="faq-a" style="display:none">Only what you configure — name, email, and conversation history. All data is routed through your Freshchat account per their privacy policy.</div>
+      <div class="faq-a" style="display:none">Absolutely. The Freshchat widget is embedded with a sandbox token. Click Chat with us to test the full pre-chat flow.</div>
     </div>
   </div>
 </section>
 
-<!-- CTA BAND -->
 <div class="cta-band" id="contact">
   <h2>Ready to get started?</h2>
-  <p>Join thousands of teams already building with NovaByte. Chat with us right now using the widget below.</p>
+  <p>Join thousands of teams already building with NovaByte. Chat with us right now.</p>
   <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-    <button class="btn-primary" onclick="openPrechat()">💬 Chat with us</button>
+    <button class="btn-primary" onclick="openPrechat()">Chat with us</button>
     <button class="btn-ghost">Book a demo</button>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="logo">NovaByte</div>
-  <p>© 2026 NovaByte Inc. — Sandbox demo for Freshchat widget testing.</p>
+  <p>2026 NovaByte Inc. Sandbox demo for Freshchat widget testing.</p>
 </footer>
 
-<script>
-  /* ── FAQ accordion ── */
-  function toggleFaq(el) {
-    const answer = el.nextElementSibling;
-    const icon   = el.querySelector('span');
-    const isOpen = answer.style.display === 'block';
-    answer.style.display = isOpen ? 'none' : 'block';
-    icon.textContent = isOpen ? '+' : '−';
-  }
-</script>
-
-<!-- Pre-chat FAQ Flow + Freshchat -->
-<style>
-  #prechat-overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 9999;
-    background: rgba(0,0,0,0.55);
-    align-items: flex-end; justify-content: flex-end;
-    padding: 0 24px 90px;
-  }
-  #prechat-overlay.show { display: flex; }
-  #prechat-box {
-    width: 360px;
-    background: #ffffff;
-    border-radius: 16px;
-    overflow: hidden;
-    font-family: 'DM Sans', sans-serif;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: popUp 0.3s cubic-bezier(.4,0,.2,1);
-  }
-  @keyframes popUp {
-    from { opacity:0; transform: translateY(20px) scale(0.97); }
-    to   { opacity:1; transform: translateY(0) scale(1); }
-  }
-  #prechat-header {
-    background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
-    padding: 1.25rem 1.25rem 1rem;
-    color: #fff;
-  }
-  #prechat-header .brand { font-size: 0.75rem; opacity: 0.8; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
-  #prechat-header h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin: 0 0 0.25rem; }
-  #prechat-header p  { font-size: 0.8rem; opacity: 0.85; margin: 0; }
-  #prechat-close {
-    float: right; background: rgba(255,255,255,0.2); border: none;
-    color: #fff; width: 28px; height: 28px; border-radius: 50%;
-    font-size: 1rem; cursor: pointer; line-height: 28px; text-align: center;
-    margin-top: -4px;
-  }
-  #prechat-body { padding: 1rem; max-height: 420px; overflow-y: auto; }
-
-  .faq-step { display: none; }
-  .faq-step.active { display: block; }
-
-  .step-label { font-size: 0.7rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .step-question { font-size: 0.9rem; font-weight: 500; color: #1a1a2e; margin-bottom: 0.75rem; line-height: 1.5; }
-
-  .faq-btn {
-    display: flex; align-items: center; gap: 0.6rem;
-    width: 100%; text-align: left;
-    background: #f7f7fb; border: 1px solid #e8e8f0;
-    border-radius: 10px; padding: 0.65rem 0.85rem;
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-    color: #1a1a2e; cursor: pointer; margin-bottom: 0.5rem;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .faq-btn:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
-  .faq-btn .icon { font-size: 1.1rem; flex-shrink: 0; }
-
-  .answer-box {
-    background: #f0fdf4; border: 1px solid #bbf7d0;
-    border-radius: 10px; padding: 0.85rem 1rem;
-    font-size: 0.85rem; color: #166534; line-height: 1.6;
-    margin-bottom: 0.75rem;
-  }
-
-  .prechat-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
-  .btn-chat {
-    flex: 1; background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
-    color: #fff; border: none; border-radius: 8px;
-    padding: 0.65rem 1rem; font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; font-weight: 500; cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .btn-chat:hover { opacity: 0.88; }
-  .btn-back {
-    background: #f7f7fb; border: 1px solid #e8e8f0;
-    color: #555; border-radius: 8px;
-    padding: 0.65rem 1rem; font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; cursor: pointer;
-  }
-  .btn-back:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
-
-  #fc-launcher {
-    position: fixed; bottom: 24px; right: 24px; z-index: 9998;
-    background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
-    color: #fff; border: none; border-radius: 50px;
-    padding: 0.75rem 1.4rem; font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem; font-weight: 500; cursor: pointer;
-    box-shadow: 0 4px 20px rgba(124,92,252,0.45);
-    display: flex; align-items: center; gap: 0.5rem;
-    transition: transform 0.2s, opacity 0.2s;
-  }
-  #fc-launcher:hover { transform: translateY(-2px); opacity: 0.92; }
-  #fc-launcher.hidden { display: none; }
-
-  .breadcrumb {
-    font-size: 0.72rem; color: #aaa; margin-bottom: 0.75rem;
-    display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;
-  }
-  .breadcrumb span { color: #7c5cfc; cursor: pointer; }
-  .breadcrumb span:hover { text-decoration: underline; }
-</style>
-
-<!-- Custom launcher button -->
-<button id="fc-launcher" onclick="openPrechat()">
-  💬 Chat with us
-</button>
+<!-- Custom launcher -->
+<button id="fc-launcher" onclick="openPrechat()">Chat with us</button>
 
 <!-- Pre-chat overlay -->
 <div id="prechat-overlay">
   <div id="prechat-box">
     <div id="prechat-header">
-      <button id="prechat-close" onclick="closePrechat()">✕</button>
+      <button id="prechat-close" onclick="closePrechat()">X</button>
       <div class="brand">Bosta Logistics Support</div>
       <h3 id="header-title">How can we help?</h3>
       <p id="header-sub">Select a topic or chat with an agent</p>
     </div>
     <div id="prechat-body">
 
-      <!-- Step 1: Main topics -->
+      <!-- Main menu -->
       <div class="faq-step active" id="step-main">
         <div class="step-label">Choose a topic</div>
-        <button class="faq-btn" onclick="showTopic('shipment')"><span class="icon">📦</span> Shipment tracking & status</button>
-        <button class="faq-btn" onclick="showTopic('pickup')"><span class="icon">🚚</span> Pickup scheduling & issues</button>
-        <button class="faq-btn" onclick="showTopic('delivery')"><span class="icon">🏠</span> Delivery problems & delays</button>
-        <button class="faq-btn" onclick="showTopic('returns')"><span class="icon">↩️</span> Returns & reverse logistics</button>
-        <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">💳</span> Billing, invoices & pricing</button>
-        <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">🔗</span> API & system integration</button>
-        <button class="faq-btn" onclick="showTopic('account')"><span class="icon">👤</span> Account & contract management</button>
-        <button class="faq-btn" onclick="showTopic('create-order')"><span class="icon">📝</span> How to create an order</button>
-        <button class="faq-btn" onclick="startChat('general')"><span class="icon">💬</span> Other — chat with an agent</button>
+        <button class="faq-btn" onclick="showTopic('shipment')"><span class="icon">Box</span> Shipment tracking and status</button>
+        <button class="faq-btn" onclick="showTopic('pickup')"><span class="icon">Truck</span> Pickup scheduling and issues</button>
+        <button class="faq-btn" onclick="showTopic('delivery')"><span class="icon">Home</span> Delivery problems and delays</button>
+        <button class="faq-btn" onclick="showTopic('returns')"><span class="icon">Return</span> Returns and reverse logistics</button>
+        <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">Card</span> Billing, invoices and pricing</button>
+        <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">Link</span> API and system integration</button>
+        <button class="faq-btn" onclick="showTopic('account')"><span class="icon">User</span> Account and contract management</button>
+        <button class="faq-btn" onclick="showTopic('create-order')"><span class="icon">Edit</span> How to create an order</button>
+        <button class="faq-btn" onclick="startChat('general')"><span class="icon">Chat</span> Other -- chat with an agent</button>
       </div>
 
-      <!-- Step 2a: Shipment -->
+      <!-- Shipment -->
       <div class="faq-step" id="step-shipment">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Shipment tracking
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Shipment tracking</div>
         <div class="step-label">Shipment tracking</div>
-        <button class="faq-btn" onclick="showAnswer('track-order')"><span class="icon">🔍</span> How do I track my shipment?</button>
-        <button class="faq-btn" onclick="showAnswer('lost-shipment')"><span class="icon">❓</span> My shipment shows lost or stuck</button>
-        <button class="faq-btn" onclick="showAnswer('status-not-updating')"><span class="icon">🔄</span> Tracking status not updating</button>
-        <button class="faq-btn" onclick="startChat('shipment')"><span class="icon">💬</span> My issue isn't listed — chat now</button>
+        <button class="faq-btn" onclick="showAnswer('track-order')"><span class="icon">Search</span> How do I track my shipment?</button>
+        <button class="faq-btn" onclick="showAnswer('lost-shipment')"><span class="icon">Question</span> My shipment shows lost or stuck</button>
+        <button class="faq-btn" onclick="showAnswer('status-not-updating')"><span class="icon">Refresh</span> Tracking status not updating</button>
+        <button class="faq-btn" onclick="startChat('shipment')"><span class="icon">Chat</span> My issue is not listed -- chat now</button>
       </div>
 
-      <!-- Step 2b: Pickup -->
+      <!-- Pickup -->
       <div class="faq-step" id="step-pickup">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Pickup
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Pickup</div>
         <div class="step-label">Pickup scheduling</div>
-        <button class="faq-btn" onclick="showAnswer('schedule-pickup')"><span class="icon">📅</span> How do I schedule a pickup?</button>
-        <button class="faq-btn" onclick="showAnswer('missed-pickup')"><span class="icon">⚠️</span> Courier didn't show up for pickup</button>
-        <button class="faq-btn" onclick="showAnswer('pickup-cutoff')"><span class="icon">⏰</span> What is the pickup cutoff time?</button>
-        <button class="faq-btn" onclick="startChat('pickup')"><span class="icon">💬</span> Chat with an agent</button>
+        <button class="faq-btn" onclick="showAnswer('schedule-pickup')"><span class="icon">Calendar</span> How do I schedule a pickup?</button>
+        <button class="faq-btn" onclick="showAnswer('missed-pickup')"><span class="icon">Warning</span> Courier did not show up for pickup</button>
+        <button class="faq-btn" onclick="showAnswer('pickup-cutoff')"><span class="icon">Clock</span> What is the pickup cutoff time?</button>
+        <button class="faq-btn" onclick="startChat('pickup')"><span class="icon">Chat</span> Chat with an agent</button>
       </div>
 
-      <!-- Step 2c: Delivery -->
+      <!-- Delivery -->
       <div class="faq-step" id="step-delivery">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Delivery
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Delivery</div>
         <div class="step-label">Delivery issues</div>
-        <button class="faq-btn" onclick="showTrackingStep()"><span class="icon">⏳</span> My delivery is delayed</button>
-        <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">📍</span> Delivered to wrong address</button>
-        <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">📦</span> Package arrived damaged</button>
-        <button class="faq-btn" onclick="startChat('delivery')"><span class="icon">💬</span> Chat with an agent</button>
+        <button class="faq-btn" onclick="showTrackingStep()"><span class="icon">Timer</span> My delivery is delayed</button>
+        <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">Pin</span> Delivered to wrong address</button>
+        <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">Box</span> Package arrived damaged</button>
+        <button class="faq-btn" onclick="startChat('delivery')"><span class="icon">Chat</span> Chat with an agent</button>
       </div>
 
-      <!-- Step: Tracking number input -->
+      <!-- Tracking number input -->
       <div class="faq-step" id="step-tracking-input">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › <span onclick="showTopic('delivery')">Delivery</span> › Delayed delivery
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; <span onclick="showTopic('delivery')">Delivery</span> &rsaquo; Delayed delivery</div>
         <div class="step-label">Check your order status</div>
         <p style="font-size:0.875rem;color:#444;margin-bottom:1rem;line-height:1.6;">Please enter your tracking number so we can check the status of your shipment.</p>
-        <input
-          id="tracking-input"
-          type="text"
-          placeholder="e.g. BST-123456789"
-          style="width:100%;padding:0.65rem 0.85rem;border:1px solid #e8e8f0;border-radius:10px;font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:0.75rem;color:#1a1a2e;"
-          oninput="this.style.borderColor='#7c5cfc'"
-        />
+        <input id="tracking-input" type="text" placeholder="e.g. BST-123456789" style="width:100%;padding:0.65rem 0.85rem;border:1px solid #e8e8f0;border-radius:10px;font-size:0.875rem;font-family:DM Sans,sans-serif;outline:none;margin-bottom:0.75rem;color:#1a1a2e;" />
         <div id="tracking-error" style="display:none;font-size:0.78rem;color:#dc2626;margin-bottom:0.5rem;">Please enter a valid tracking number.</div>
         <div class="prechat-actions">
-          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
-          <button class="btn-chat" onclick="checkTracking()">Check status →</button>
+          <button class="btn-back" onclick="showTopic('delivery')">Back</button>
+          <button class="btn-chat" onclick="checkTracking()">Check status</button>
         </div>
       </div>
 
-      <!-- Step: Blocked — within normal delivery times -->
+      <!-- Blocked - within normal delivery times -->
       <div class="faq-step" id="step-tracking-blocked">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › <span onclick="showTopic('delivery')">Delivery</span> › Delayed delivery
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; <span onclick="showTopic('delivery')">Delivery</span> &rsaquo; Delayed delivery</div>
         <div class="step-label">Order status</div>
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1rem;margin-bottom:0.85rem;">
-          <div style="font-size:1.1rem;margin-bottom:0.4rem;">✅</div>
+          <div style="font-size:1.1rem;margin-bottom:0.4rem;">OK</div>
           <div style="font-weight:500;font-size:0.875rem;color:#166534;margin-bottom:0.35rem;">Your order is on its way!</div>
-          <div style="font-size:0.82rem;color:#166534;line-height:1.6;">Tracking number <strong id="blocked-tracking-num"></strong> is still within the normal delivery timeframe of <strong>3–5 business days</strong>. Please allow until the estimated delivery date before contacting support.</div>
+          <div style="font-size:0.82rem;color:#166534;line-height:1.6;">Tracking number <strong id="blocked-tracking-num"></strong> is still within the normal delivery timeframe of <strong>3 to 5 business days</strong>. Please allow until the estimated delivery date before contacting support.</div>
         </div>
         <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:0.85rem;margin-bottom:0.85rem;font-size:0.82rem;color:#9a3412;line-height:1.6;">
-          💡 <strong>Tip:</strong> You can track your shipment in real time from your Bosta dashboard under <strong>Shipments → Tracking</strong>.
+          Tip: You can track your shipment in real time from your Bosta dashboard under Shipments then Tracking.
         </div>
         <div class="prechat-actions">
-          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
+          <button class="btn-back" onclick="showTopic('delivery')">Back</button>
           <button class="btn-chat" style="background:#e5e7eb;color:#6b7280;cursor:not-allowed;" disabled>Chat unavailable</button>
         </div>
         <p style="font-size:0.75rem;color:#aaa;margin-top:0.5rem;text-align:center;">Chat support for delays is only available after the estimated delivery date has passed.</p>
       </div>
 
-      <!-- Step 2d: Returns -->
+      <!-- Returns -->
       <div class="faq-step" id="step-returns">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Returns
-        </div>
-        <div class="step-label">Returns & reverse logistics</div>
-        <button class="faq-btn" onclick="showAnswer('initiate-return')"><span class="icon">↩️</span> How do I initiate a return?</button>
-        <button class="faq-btn" onclick="showAnswer('return-status')"><span class="icon">🔍</span> Track my return shipment</button>
-        <button class="faq-btn" onclick="showAnswer('return-policy')"><span class="icon">📋</span> What is your return policy?</button>
-        <button class="faq-btn" onclick="startChat('returns')"><span class="icon">💬</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Returns</div>
+        <div class="step-label">Returns and reverse logistics</div>
+        <button class="faq-btn" onclick="showAnswer('initiate-return')"><span class="icon">Return</span> How do I initiate a return?</button>
+        <button class="faq-btn" onclick="showAnswer('return-status')"><span class="icon">Search</span> Track my return shipment</button>
+        <button class="faq-btn" onclick="showAnswer('return-policy')"><span class="icon">Doc</span> What is your return policy?</button>
+        <button class="faq-btn" onclick="startChat('returns')"><span class="icon">Chat</span> Chat with an agent</button>
       </div>
 
-      <!-- Step 2e: Billing -->
+      <!-- Billing -->
       <div class="faq-step" id="step-billing">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Billing
-        </div>
-        <div class="step-label">Billing & pricing</div>
-        <button class="faq-btn" onclick="showAnswer('invoice')"><span class="icon">🧾</span> Where can I find my invoice?</button>
-        <button class="faq-btn" onclick="showAnswer('pricing')"><span class="icon">💰</span> How is shipping cost calculated?</button>
-        <button class="faq-btn" onclick="showAnswer('dispute')"><span class="icon">⚠️</span> I want to dispute a charge</button>
-        <button class="faq-btn" onclick="startChat('billing')"><span class="icon">💬</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Billing</div>
+        <div class="step-label">Billing and pricing</div>
+        <button class="faq-btn" onclick="showAnswer('invoice')"><span class="icon">Receipt</span> Where can I find my invoice?</button>
+        <button class="faq-btn" onclick="showAnswer('pricing')"><span class="icon">Money</span> How is shipping cost calculated?</button>
+        <button class="faq-btn" onclick="showAnswer('dispute')"><span class="icon">Warning</span> I want to dispute a charge</button>
+        <button class="faq-btn" onclick="startChat('billing')"><span class="icon">Chat</span> Chat with an agent</button>
       </div>
 
-      <!-- Step 2f: Integration -->
+      <!-- Integration -->
       <div class="faq-step" id="step-integration">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › API & Integration
-        </div>
-        <div class="step-label">API & system integration</div>
-        <button class="faq-btn" onclick="showAnswer('api-docs')"><span class="icon">📄</span> Where are the API docs?</button>
-        <button class="faq-btn" onclick="showAnswer('webhook')"><span class="icon">🔔</span> How do webhooks work?</button>
-        <button class="faq-btn" onclick="showAnswer('api-error')"><span class="icon">🐛</span> I'm getting API errors</button>
-        <button class="faq-btn" onclick="startChat('integration')"><span class="icon">💬</span> Chat with a tech agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; API and Integration</div>
+        <div class="step-label">API and system integration</div>
+        <button class="faq-btn" onclick="showAnswer('api-docs')"><span class="icon">Doc</span> Where are the API docs?</button>
+        <button class="faq-btn" onclick="showAnswer('webhook')"><span class="icon">Bell</span> How do webhooks work?</button>
+        <button class="faq-btn" onclick="showAnswer('api-error')"><span class="icon">Bug</span> I am getting API errors</button>
+        <button class="faq-btn" onclick="startChat('integration')"><span class="icon">Chat</span> Chat with a tech agent</button>
       </div>
 
-      <!-- Step 2g: Account -->
+      <!-- Account -->
       <div class="faq-step" id="step-account">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › Account
-        </div>
-        <div class="step-label">Account & contracts</div>
-        <button class="faq-btn" onclick="showAnswer('reset-password')"><span class="icon">🔐</span> Reset my password</button>
-        <button class="faq-btn" onclick="showAnswer('add-user')"><span class="icon">👥</span> Add a team member to my account</button>
-        <button class="faq-btn" onclick="showAnswer('contract')"><span class="icon">📝</span> Questions about my contract</button>
-        <button class="faq-btn" onclick="startChat('account')"><span class="icon">💬</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Account</div>
+        <div class="step-label">Account and contracts</div>
+        <button class="faq-btn" onclick="showAnswer('reset-password')"><span class="icon">Lock</span> Reset my password</button>
+        <button class="faq-btn" onclick="showAnswer('add-user')"><span class="icon">Users</span> Add a team member to my account</button>
+        <button class="faq-btn" onclick="showAnswer('contract')"><span class="icon">Doc</span> Questions about my contract</button>
+        <button class="faq-btn" onclick="startChat('account')"><span class="icon">Chat</span> Chat with an agent</button>
       </div>
 
-      <!-- Step 2h: Create Order -->
+      <!-- Create order -->
       <div class="faq-step" id="step-create-order">
-        <div class="breadcrumb">
-          <span onclick="backToMain()">Topics</span> › How to create an order
-        </div>
+        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; How to create an order</div>
         <div class="step-label">How to create an order</div>
         <div style="font-size:0.875rem;color:#444;line-height:1.75;margin-bottom:1rem;">
           Follow these steps to create a new shipment order on Bosta:
           <ol style="margin:0.75rem 0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:0.5rem;">
-            <li><strong>Log in</strong> to your Bosta dashboard at <span style="color:#7c5cfc;">app.bosta.co</span></li>
-            <li>Click <strong>"New Shipment"</strong> from the top right or the sidebar</li>
-            <li>Enter the <strong>recipient details</strong> — name, phone, and address</li>
-            <li>Fill in the <strong>package details</strong> — weight, dimensions, and COD amount if applicable</li>
+            <li><strong>Log in</strong> to your Bosta dashboard at app.bosta.co</li>
+            <li>Click <strong>New Shipment</strong> from the top right or the sidebar</li>
+            <li>Enter the <strong>recipient details</strong> -- name, phone, and address</li>
+            <li>Fill in the <strong>package details</strong> -- weight, dimensions, and COD amount if applicable</li>
             <li>Select your preferred <strong>pickup date and time slot</strong></li>
-            <li>Review the order summary and click <strong>"Confirm Shipment"</strong></li>
-            <li>Your <strong>AWB number</strong> will be generated — print the label and attach it to your package</li>
-            <li>The courier will arrive at your pickup address on the scheduled date ✅</li>
+            <li>Review the order summary and click <strong>Confirm Shipment</strong></li>
+            <li>Your <strong>AWB number</strong> will be generated -- print the label and attach it to your package</li>
+            <li>The courier will arrive at your pickup address on the scheduled date</li>
           </ol>
         </div>
         <div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#4c1d95;margin-bottom:1rem;line-height:1.6;">
-          💡 <strong>Tip:</strong> You can also create bulk orders via CSV upload or through the Bosta API. Check <span style="color:#7c5cfc;">docs.bosta.co</span> for details.
+          Tip: You can also create bulk orders via CSV upload or through the Bosta API. Check docs.bosta.co for details.
         </div>
-        <button class="btn-chat" style="width:100%;" onclick="backToMain()">✓ Got it — back to menu</button>
+        <button class="btn-chat" style="width:100%;" onclick="backToMain()">Got it -- back to menu</button>
       </div>
 
-      <!-- Step 3: Answer view -->
+      <!-- Answer view -->
       <div class="faq-step" id="step-answer">
         <div class="breadcrumb" id="answer-breadcrumb"></div>
         <div class="step-label">Answer</div>
         <div class="answer-box" id="answer-text"></div>
         <p style="font-size:0.8rem;color:#888;margin-bottom:0.75rem;">Was this helpful? If not, our agents are here.</p>
         <div class="prechat-actions">
-          <button class="btn-back" id="answer-back-btn" onclick="backFromAnswer()">← Back</button>
-          <button class="btn-chat" onclick="startChat('answer')">💬 Chat with an agent</button>
+          <button class="btn-back" id="answer-back-btn" onclick="backFromAnswer()">Back</button>
+          <button class="btn-chat" onclick="startChat('answer')">Chat with an agent</button>
         </div>
       </div>
 
@@ -816,39 +386,46 @@
 </div>
 
 <script>
-  var currentTopic = 'main';
-  var flowPath = []; /* tracks the customer's selections */
-
-  function recordStep(label) {
-    flowPath.push(label);
+  function toggleFaq(el) {
+    var answer = el.nextElementSibling;
+    var icon = el.querySelector('span');
+    var isOpen = answer.style.display === 'block';
+    answer.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '+' : '-';
   }
+</script>
+
+<script>
+  var currentTopic = 'main';
+  var flowPath = [];
+
+  function recordStep(label) { flowPath.push(label); }
 
   function buildFlowSummary() {
-    return '--- Customer pre-chat flow ---\n' + flowPath.join(' → ') + '\n------------------------------';
+    return 'Pre-chat flow: ' + flowPath.join(' > ');
   }
 
   var answers = {
-    'track-order':       { text: 'Log in to your Bosta dashboard and go to Shipments → Tracking. Enter your AWB number to see real-time status updates and courier location.', back: 'shipment' },
-    'lost-shipment':     { text: 'If your shipment shows "lost" or has had no movement for 5+ business days, please chat with us so we can file an investigation with the courier team.', back: 'shipment' },
+    'track-order':         { text: 'Log in to your Bosta dashboard and go to Shipments then Tracking. Enter your AWB number to see real-time status updates and courier location.', back: 'shipment' },
+    'lost-shipment':       { text: 'If your shipment shows lost or has had no movement for 5 or more business days, please chat with us so we can file an investigation with the courier team.', back: 'shipment' },
     'status-not-updating': { text: 'Status updates can take up to 2 hours after a scan event. If it has been more than 24 hours with no update, please contact our support team.', back: 'shipment' },
-    'schedule-pickup':   { text: 'Go to Dashboard → Create Shipment → Schedule Pickup. You can book same-day pickup if requested before 12:00 PM, or next-day pickup anytime.', back: 'pickup' },
-    'missed-pickup':     { text: 'We apologise for the inconvenience. Please chat with us with your pickup order ID and we will reschedule your pickup as a priority.', back: 'pickup' },
-    'pickup-cutoff':     { text: 'The cutoff time for same-day pickup is 12:00 PM. Orders placed after that will be scheduled for the next business day.', back: 'pickup' },
-    'delayed-delivery':  { text: 'Deliveries may be delayed due to high volume, weather, or address issues. Check your tracking page for the latest ETA or chat with us to investigate.', back: 'delivery' },
-    'wrong-address':     { text: 'Please chat with us immediately with your AWB number. We will coordinate with the courier to correct the delivery address or arrange a re-delivery.', back: 'delivery' },
-    'damaged':           { text: 'Take photos of the damaged package and item, then chat with us within 48 hours of delivery. We will open a claim with our insurance and courier team.', back: 'delivery' },
-    'initiate-return':   { text: 'Go to Dashboard → Shipments → find your order → click "Create Return". Our courier will pick up the item from the end customer within 1-3 business days.', back: 'returns' },
-    'return-status':     { text: 'Return shipments can be tracked using the reverse AWB number found in Dashboard → Returns. Status updates in real time just like forward shipments.', back: 'returns' },
-    'return-policy':     { text: 'Returns are accepted within 14 days of delivery. The item must be in original condition. Bosta covers return courier costs for eligible claims.', back: 'returns' },
-    'invoice':           { text: 'Invoices are auto-generated on the 1st of each month and sent to your registered email. You can also download them from Dashboard → Billing → Invoices.', back: 'billing' },
-    'pricing':           { text: 'Shipping costs are calculated based on package weight, dimensions, destination zone, and your contracted rate. View your rate card in Dashboard → Billing → Rate Card.', back: 'billing' },
-    'dispute':           { text: 'To dispute a charge, go to Dashboard → Billing → find the charge → click "Dispute". Or chat with us and our billing team will review within 2 business days.', back: 'billing' },
-    'api-docs':          { text: 'Our full API documentation is available at docs.bosta.co. You will find REST endpoints, webhooks, authentication guides, and code samples.', back: 'integration' },
-    'webhook':           { text: 'Webhooks notify your system of shipment events in real time. Configure them in Dashboard → Settings → Webhooks. Supported events include created, picked_up, delivered, and failed.', back: 'integration' },
-    'api-error':         { text: 'Common API errors: 401 = invalid API key, 422 = missing required fields, 429 = rate limit exceeded. Check our docs or chat with our tech team for help.', back: 'integration' },
-    'reset-password':    { text: 'Go to bosta.co/login → click "Forgot Password" → enter your email. You will receive a reset link within 5 minutes. Check your spam folder if you don\'t see it.', back: 'account' },
-    'add-user':          { text: 'Go to Dashboard → Settings → Team Members → Invite User. Enter their email and assign a role (Admin, Operations, Finance). They will receive an invite email.', back: 'account' },
-    'contract':          { text: 'For contract renewals, amendments, or pricing negotiations please chat with us and your dedicated account manager will reach out within 1 business day.', back: 'account' }
+    'schedule-pickup':     { text: 'Go to Dashboard, then Create Shipment, then Schedule Pickup. You can book same-day pickup if requested before 12:00 PM, or next-day pickup anytime.', back: 'pickup' },
+    'missed-pickup':       { text: 'We apologise for the inconvenience. Please chat with us with your pickup order ID and we will reschedule your pickup as a priority.', back: 'pickup' },
+    'pickup-cutoff':       { text: 'The cutoff time for same-day pickup is 12:00 PM. Orders placed after that will be scheduled for the next business day.', back: 'pickup' },
+    'wrong-address':       { text: 'Please chat with us immediately with your AWB number. We will coordinate with the courier to correct the delivery address or arrange a re-delivery.', back: 'delivery' },
+    'damaged':             { text: 'Take photos of the damaged package and item, then chat with us within 48 hours of delivery. We will open a claim with our insurance and courier team.', back: 'delivery' },
+    'initiate-return':     { text: 'Go to Dashboard, then Shipments, find your order and click Create Return. Our courier will pick up the item from the end customer within 1 to 3 business days.', back: 'returns' },
+    'return-status':       { text: 'Return shipments can be tracked using the reverse AWB number found in Dashboard under Returns. Status updates in real time just like forward shipments.', back: 'returns' },
+    'return-policy':       { text: 'Returns are accepted within 14 days of delivery. The item must be in original condition. Bosta covers return courier costs for eligible claims.', back: 'returns' },
+    'invoice':             { text: 'Invoices are auto-generated on the 1st of each month and sent to your registered email. You can also download them from Dashboard under Billing then Invoices.', back: 'billing' },
+    'pricing':             { text: 'Shipping costs are calculated based on package weight, dimensions, destination zone, and your contracted rate. View your rate card in Dashboard under Billing then Rate Card.', back: 'billing' },
+    'dispute':             { text: 'To dispute a charge, go to Dashboard then Billing, find the charge and click Dispute. Or chat with us and our billing team will review within 2 business days.', back: 'billing' },
+    'api-docs':            { text: 'Our full API documentation is available at docs.bosta.co. You will find REST endpoints, webhooks, authentication guides, and code samples.', back: 'integration' },
+    'webhook':             { text: 'Webhooks notify your system of shipment events in real time. Configure them in Dashboard under Settings then Webhooks. Supported events include created, picked up, delivered, and failed.', back: 'integration' },
+    'api-error':           { text: 'Common API errors: 401 means invalid API key, 422 means missing required fields, 429 means rate limit exceeded. Check our docs or chat with our tech team for help.', back: 'integration' },
+    'reset-password':      { text: 'Go to bosta.co/login, click Forgot Password, then enter your email. You will receive a reset link within 5 minutes. Check your spam folder if you do not see it.', back: 'account' },
+    'add-user':            { text: 'Go to Dashboard then Settings then Team Members then Invite User. Enter their email and assign a role such as Admin, Operations, or Finance. They will receive an invite email.', back: 'account' },
+    'contract':            { text: 'For contract renewals, amendments, or pricing negotiations please chat with us and your dedicated account manager will reach out within 1 business day.', back: 'account' }
   };
 
   function openPrechat() {
@@ -864,30 +441,26 @@
   function showTopic(topic) {
     currentTopic = topic;
     recordStep(topicTitle(topic));
-    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('step-' + topic).classList.add('active');
     document.getElementById('header-title').textContent = topicTitle(topic);
     document.getElementById('header-sub').textContent = 'Select your question below';
   }
 
   function topicTitle(t) {
-    var titles = {
-      shipment: 'Shipment tracking',
-      pickup: 'Pickup issues',
-      delivery: 'Delivery problems',
-      returns: 'Returns & reverse logistics',
-      billing: 'Billing & invoices',
-      integration: 'API & integration',
-      account: 'Account management',
-      'create-order': 'How to create an order'
+    var map = {
+      shipment: 'Shipment tracking', pickup: 'Pickup issues',
+      delivery: 'Delivery problems', returns: 'Returns and reverse logistics',
+      billing: 'Billing and invoices', integration: 'API and integration',
+      account: 'Account management', 'create-order': 'How to create an order'
     };
-    return titles[t] || 'How can we help?';
+    return map[t] || 'How can we help?';
   }
 
   function backToMain() {
     currentTopic = 'main';
     flowPath = [];
-    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('step-main').classList.add('active');
     document.getElementById('header-title').textContent = 'How can we help?';
     document.getElementById('header-sub').textContent = 'Select a topic or chat with an agent';
@@ -900,17 +473,21 @@
     document.getElementById('answer-text').textContent = a.text;
     document.getElementById('answer-back-btn').setAttribute('data-back', a.back);
     document.getElementById('answer-breadcrumb').innerHTML =
-      '<span onclick="backToMain()">Topics</span> › ' +
-      '<span onclick="showTopic(\'' + a.back + '\')">' + topicTitle(a.back) + '</span> › Answer';
-    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+      '<span onclick="backToMain()">Topics</span> › <span onclick="showTopic(\'' + a.back + '\')">' + topicTitle(a.back) + '</span> › Answer';
+    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('step-answer').classList.add('active');
     document.getElementById('header-title').textContent = 'Answer';
     document.getElementById('header-sub').textContent = 'Still need help? Chat with us';
   }
 
+  function backFromAnswer() {
+    var back = document.getElementById('answer-back-btn').getAttribute('data-back') || 'main';
+    if (back === 'main') { backToMain(); } else { showTopic(back); }
+  }
+
   function showTrackingStep() {
     recordStep('My delivery is delayed');
-    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('step-tracking-input').classList.add('active');
     document.getElementById('header-title').textContent = 'Check delivery status';
     document.getElementById('header-sub').textContent = 'Enter your tracking number';
@@ -920,20 +497,14 @@
 
   function checkTracking() {
     var val = document.getElementById('tracking-input').value.trim();
-    if (!val) {
-      document.getElementById('tracking-error').style.display = 'block';
-      return;
-    }
+    if (!val) { document.getElementById('tracking-error').style.display = 'block'; return; }
     document.getElementById('tracking-error').style.display = 'none';
     recordStep('Tracking: ' + val);
     document.getElementById('blocked-tracking-num').textContent = val;
-    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('step-tracking-blocked').classList.add('active');
     document.getElementById('header-title').textContent = 'Order is on its way';
     document.getElementById('header-sub').textContent = 'Within normal delivery times';
-  }
-    var back = document.getElementById('answer-back-btn').getAttribute('data-back') || 'main';
-    if (back === 'main') backToMain(); else showTopic(back);
   }
 
   function startChat(context) {
@@ -943,96 +514,42 @@
       window.openFreshchat(summary);
     } else {
       setTimeout(function() {
-        if (window.openFreshchat) window.openFreshchat(summary);
+        if (window.openFreshchat) { window.openFreshchat(summary); }
       }, 1500);
     }
   }
+</script>
 
-  /* Force hide native Freshchat bubble — we use our own launcher */
+<script>
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
     host: "https://wchat-fs.freshchat.com",
-    config: { hideFAB: true },
-    onInit: function() {
-      window.fcWidget.hide();
-      window.fcWidget.on('widget:loaded', function() {
-        window.fcWidget.hide();
-      });
-    }
+    config: { hideFAB: true }
   };
 
-  /* CSS force-hide as fallback */
-  var style = document.createElement('style');
-  document.head.appendChild(style);
-
-  function forceHideBubble() {
-    style.textContent = '#fc_frame { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; } #freshchat-container { display: none !important; } .fc-widget-container { display: none !important; }';
-  }
-  forceHideBubble();
-
-  /* Re-hide every 500ms for first 10 seconds to beat Freshchat's lazy injection */
-  var hideInterval = setInterval(forceHideBubble, 500);
-  setTimeout(function() {
-    clearInterval(hideInterval);
-    /* After initial load keep a lightweight permanent watcher */
-    setInterval(function() {
-      if (window.fcWidget && !window.fcWidget.isOpen()) {
-        forceHideBubble();
-      }
-    }, 1000);
-  }, 10000);
-
-  /* When startChat is called, temporarily show the widget then open it */
-  /* Re-hide bubble whenever Freshchat widget fires any event */
-  function watchAndHideBubble() {
-    if (window.fcWidget) {
-      window.fcWidget.on('widget:closed', function() { forceHideBubble(); document.getElementById('fc-launcher').classList.remove('hidden'); });
-      window.fcWidget.on('widget:loaded', function() { forceHideBubble(); });
-    }
-  }
+  var fcStyle = document.createElement('style');
+  fcStyle.textContent = '#fc_frame:not(.fc-open){display:none!important}.fc-widget-btn{display:none!important}';
+  document.head.appendChild(fcStyle);
 
   window.openFreshchat = function(flowSummary) {
-    /* Do NOT clear the style — instead punch a hole only for the chat iframe, not the bubble */
-    style.textContent = '#fc_frame { display: block !important; } .fc_push_frame { display: none !important; } #freshchat-container .fc-widget-open ~ .fc-widget-btn { display: none !important; } #fc_frame .fc-widget-btn { display: none !important; }';
-
-    if (window.fcWidget) {
-      watchAndHideBubble();
-      window.fcWidget.show();
-      window.fcWidget.open();
-      /* After chat opens, re-apply full hide so bubble never shows */
-      setTimeout(function() {
-        forceHideBubble();
-        /* Freshchat may re-inject the bubble — keep hiding it */
-        var bubbleWatcher = setInterval(function() {
-          var frame = document.getElementById('fc_frame');
-          if (frame) {
-            var btn = frame.querySelector('.fc-widget-btn, [class*="launcher"]');
-            if (btn) btn.style.cssText = 'display:none!important';
-          }
-        }, 300);
-        /* Store watcher so we can clear if needed */
-        window._bubbleWatcher = bubbleWatcher;
-      }, 500);
-      if (flowSummary) {
-        setTimeout(function() {
-          window.fcWidget.send({ text: flowSummary });
-        }, 1000);
-      }
-    } else {
-      setTimeout(function() {
-        if (window.fcWidget) {
-          watchAndHideBubble();
-          window.fcWidget.show();
-          window.fcWidget.open();
-          setTimeout(forceHideBubble, 500);
-          if (flowSummary) {
-            setTimeout(function() {
-              window.fcWidget.send({ text: flowSummary });
-            }, 1000);
-          }
+    function tryOpen() {
+      if (window.fcWidget && window.fcWidget.isInitialized()) {
+        window.fcWidget.show();
+        window.fcWidget.open();
+        if (flowSummary) {
+          setTimeout(function() {
+            try { window.fcWidget.send({ text: flowSummary }); } catch(e) {}
+          }, 1000);
         }
-      }, 1500);
+        window.fcWidget.on('widget:closed', function() {
+          window.fcWidget.hide();
+          document.getElementById('fc-launcher').classList.remove('hidden');
+        });
+      } else {
+        setTimeout(tryOpen, 400);
+      }
     }
+    tryOpen();
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
