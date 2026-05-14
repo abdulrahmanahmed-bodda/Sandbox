@@ -644,6 +644,7 @@
         <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">💳</span> Billing, invoices & pricing</button>
         <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">🔗</span> API & system integration</button>
         <button class="faq-btn" onclick="showTopic('account')"><span class="icon">👤</span> Account & contract management</button>
+        <button class="faq-btn" onclick="showTopic('create-order')"><span class="icon">📝</span> How to create an order</button>
         <button class="faq-btn" onclick="startChat('general')"><span class="icon">💬</span> Other — chat with an agent</button>
       </div>
 
@@ -677,10 +678,52 @@
           <span onclick="backToMain()">Topics</span> › Delivery
         </div>
         <div class="step-label">Delivery issues</div>
-        <button class="faq-btn" onclick="showAnswer('delayed-delivery')"><span class="icon">⏳</span> My delivery is delayed</button>
+        <button class="faq-btn" onclick="showTrackingStep()"><span class="icon">⏳</span> My delivery is delayed</button>
         <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">📍</span> Delivered to wrong address</button>
         <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">📦</span> Package arrived damaged</button>
         <button class="faq-btn" onclick="startChat('delivery')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step: Tracking number input -->
+      <div class="faq-step" id="step-tracking-input">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › <span onclick="showTopic('delivery')">Delivery</span> › Delayed delivery
+        </div>
+        <div class="step-label">Check your order status</div>
+        <p style="font-size:0.875rem;color:#444;margin-bottom:1rem;line-height:1.6;">Please enter your tracking number so we can check the status of your shipment.</p>
+        <input
+          id="tracking-input"
+          type="text"
+          placeholder="e.g. BST-123456789"
+          style="width:100%;padding:0.65rem 0.85rem;border:1px solid #e8e8f0;border-radius:10px;font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:0.75rem;color:#1a1a2e;"
+          oninput="this.style.borderColor='#7c5cfc'"
+        />
+        <div id="tracking-error" style="display:none;font-size:0.78rem;color:#dc2626;margin-bottom:0.5rem;">Please enter a valid tracking number.</div>
+        <div class="prechat-actions">
+          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
+          <button class="btn-chat" onclick="checkTracking()">Check status →</button>
+        </div>
+      </div>
+
+      <!-- Step: Blocked — within normal delivery times -->
+      <div class="faq-step" id="step-tracking-blocked">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › <span onclick="showTopic('delivery')">Delivery</span> › Delayed delivery
+        </div>
+        <div class="step-label">Order status</div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1rem;margin-bottom:0.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:0.4rem;">✅</div>
+          <div style="font-weight:500;font-size:0.875rem;color:#166534;margin-bottom:0.35rem;">Your order is on its way!</div>
+          <div style="font-size:0.82rem;color:#166534;line-height:1.6;">Tracking number <strong id="blocked-tracking-num"></strong> is still within the normal delivery timeframe of <strong>3–5 business days</strong>. Please allow until the estimated delivery date before contacting support.</div>
+        </div>
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:0.85rem;margin-bottom:0.85rem;font-size:0.82rem;color:#9a3412;line-height:1.6;">
+          💡 <strong>Tip:</strong> You can track your shipment in real time from your Bosta dashboard under <strong>Shipments → Tracking</strong>.
+        </div>
+        <div class="prechat-actions">
+          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
+          <button class="btn-chat" style="background:#e5e7eb;color:#6b7280;cursor:not-allowed;" disabled>Chat unavailable</button>
+        </div>
+        <p style="font-size:0.75rem;color:#aaa;margin-top:0.5rem;text-align:center;">Chat support for delays is only available after the estimated delivery date has passed.</p>
       </div>
 
       <!-- Step 2d: Returns -->
@@ -731,6 +774,31 @@
         <button class="faq-btn" onclick="startChat('account')"><span class="icon">💬</span> Chat with an agent</button>
       </div>
 
+      <!-- Step 2h: Create Order -->
+      <div class="faq-step" id="step-create-order">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › How to create an order
+        </div>
+        <div class="step-label">How to create an order</div>
+        <div style="font-size:0.875rem;color:#444;line-height:1.75;margin-bottom:1rem;">
+          Follow these steps to create a new shipment order on Bosta:
+          <ol style="margin:0.75rem 0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:0.5rem;">
+            <li><strong>Log in</strong> to your Bosta dashboard at <span style="color:#7c5cfc;">app.bosta.co</span></li>
+            <li>Click <strong>"New Shipment"</strong> from the top right or the sidebar</li>
+            <li>Enter the <strong>recipient details</strong> — name, phone, and address</li>
+            <li>Fill in the <strong>package details</strong> — weight, dimensions, and COD amount if applicable</li>
+            <li>Select your preferred <strong>pickup date and time slot</strong></li>
+            <li>Review the order summary and click <strong>"Confirm Shipment"</strong></li>
+            <li>Your <strong>AWB number</strong> will be generated — print the label and attach it to your package</li>
+            <li>The courier will arrive at your pickup address on the scheduled date ✅</li>
+          </ol>
+        </div>
+        <div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#4c1d95;margin-bottom:1rem;line-height:1.6;">
+          💡 <strong>Tip:</strong> You can also create bulk orders via CSV upload or through the Bosta API. Check <span style="color:#7c5cfc;">docs.bosta.co</span> for details.
+        </div>
+        <button class="btn-chat" style="width:100%;" onclick="backToMain()">✓ Got it — back to menu</button>
+      </div>
+
       <!-- Step 3: Answer view -->
       <div class="faq-step" id="step-answer">
         <div class="breadcrumb" id="answer-breadcrumb"></div>
@@ -749,6 +817,15 @@
 
 <script>
   var currentTopic = 'main';
+  var flowPath = []; /* tracks the customer's selections */
+
+  function recordStep(label) {
+    flowPath.push(label);
+  }
+
+  function buildFlowSummary() {
+    return '--- Customer pre-chat flow ---\n' + flowPath.join(' → ') + '\n------------------------------';
+  }
 
   var answers = {
     'track-order':       { text: 'Log in to your Bosta dashboard and go to Shipments → Tracking. Enter your AWB number to see real-time status updates and courier location.', back: 'shipment' },
@@ -786,6 +863,7 @@
 
   function showTopic(topic) {
     currentTopic = topic;
+    recordStep(topicTitle(topic));
     document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
     document.getElementById('step-' + topic).classList.add('active');
     document.getElementById('header-title').textContent = topicTitle(topic);
@@ -800,13 +878,15 @@
       returns: 'Returns & reverse logistics',
       billing: 'Billing & invoices',
       integration: 'API & integration',
-      account: 'Account management'
+      account: 'Account management',
+      'create-order': 'How to create an order'
     };
     return titles[t] || 'How can we help?';
   }
 
   function backToMain() {
     currentTopic = 'main';
+    flowPath = [];
     document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
     document.getElementById('step-main').classList.add('active');
     document.getElementById('header-title').textContent = 'How can we help?';
@@ -816,6 +896,7 @@
   function showAnswer(key) {
     var a = answers[key];
     if (!a) return;
+    recordStep(key.replace(/-/g, ' '));
     document.getElementById('answer-text').textContent = a.text;
     document.getElementById('answer-back-btn').setAttribute('data-back', a.back);
     document.getElementById('answer-breadcrumb').innerHTML =
@@ -827,18 +908,42 @@
     document.getElementById('header-sub').textContent = 'Still need help? Chat with us';
   }
 
-  function backFromAnswer() {
+  function showTrackingStep() {
+    recordStep('My delivery is delayed');
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-tracking-input').classList.add('active');
+    document.getElementById('header-title').textContent = 'Check delivery status';
+    document.getElementById('header-sub').textContent = 'Enter your tracking number';
+    document.getElementById('tracking-input').value = '';
+    document.getElementById('tracking-error').style.display = 'none';
+  }
+
+  function checkTracking() {
+    var val = document.getElementById('tracking-input').value.trim();
+    if (!val) {
+      document.getElementById('tracking-error').style.display = 'block';
+      return;
+    }
+    document.getElementById('tracking-error').style.display = 'none';
+    recordStep('Tracking: ' + val);
+    document.getElementById('blocked-tracking-num').textContent = val;
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-tracking-blocked').classList.add('active');
+    document.getElementById('header-title').textContent = 'Order is on its way';
+    document.getElementById('header-sub').textContent = 'Within normal delivery times';
+  }
     var back = document.getElementById('answer-back-btn').getAttribute('data-back') || 'main';
     if (back === 'main') backToMain(); else showTopic(back);
   }
 
   function startChat(context) {
+    var summary = buildFlowSummary();
     closePrechat();
     if (window.openFreshchat) {
-      window.openFreshchat();
+      window.openFreshchat(summary);
     } else {
       setTimeout(function() {
-        if (window.openFreshchat) window.openFreshchat();
+        if (window.openFreshchat) window.openFreshchat(summary);
       }, 1500);
     }
   }
@@ -870,17 +975,27 @@
   setTimeout(function() { clearInterval(hideInterval); }, 5000);
 
   /* When startChat is called, temporarily show the widget then open it */
-  window.openFreshchat = function() {
+  window.openFreshchat = function(flowSummary) {
     style.textContent = '';
     clearInterval(hideInterval);
     if (window.fcWidget) {
       window.fcWidget.show();
       window.fcWidget.open();
+      if (flowSummary) {
+        setTimeout(function() {
+          window.fcWidget.send({ text: flowSummary });
+        }, 800);
+      }
     } else {
       setTimeout(function() {
         if (window.fcWidget) {
           window.fcWidget.show();
           window.fcWidget.open();
+          if (flowSummary) {
+            setTimeout(function() {
+              window.fcWidget.send({ text: flowSummary });
+            }, 800);
+          }
         }
       }, 1500);
     }
