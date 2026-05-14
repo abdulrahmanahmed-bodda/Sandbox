@@ -963,38 +963,72 @@
 
   /* CSS force-hide as fallback */
   var style = document.createElement('style');
-  style.textContent = '#fc_frame, #freshchat-container, .fc-widget-container { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }';
   document.head.appendChild(style);
 
-  /* Re-hide every 500ms for first 5 seconds in case widget overrides */
-  var hideInterval = setInterval(function() {
-    if (window.fcWidget) {
-      window.fcWidget.hide();
-    }
-  }, 500);
-  setTimeout(function() { clearInterval(hideInterval); }, 5000);
+  function forceHideBubble() {
+    style.textContent = '#fc_frame { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; } #freshchat-container { display: none !important; } .fc-widget-container { display: none !important; }';
+  }
+  forceHideBubble();
+
+  /* Re-hide every 500ms for first 10 seconds to beat Freshchat's lazy injection */
+  var hideInterval = setInterval(forceHideBubble, 500);
+  setTimeout(function() {
+    clearInterval(hideInterval);
+    /* After initial load keep a lightweight permanent watcher */
+    setInterval(function() {
+      if (window.fcWidget && !window.fcWidget.isOpen()) {
+        forceHideBubble();
+      }
+    }, 1000);
+  }, 10000);
 
   /* When startChat is called, temporarily show the widget then open it */
-  window.openFreshchat = function(flowSummary) {
-    style.textContent = '';
-    clearInterval(hideInterval);
+  /* Re-hide bubble whenever Freshchat widget fires any event */
+  function watchAndHideBubble() {
     if (window.fcWidget) {
+      window.fcWidget.on('widget:closed', function() { forceHideBubble(); document.getElementById('fc-launcher').classList.remove('hidden'); });
+      window.fcWidget.on('widget:loaded', function() { forceHideBubble(); });
+    }
+  }
+
+  window.openFreshchat = function(flowSummary) {
+    /* Do NOT clear the style — instead punch a hole only for the chat iframe, not the bubble */
+    style.textContent = '#fc_frame { display: block !important; } .fc_push_frame { display: none !important; } #freshchat-container .fc-widget-open ~ .fc-widget-btn { display: none !important; } #fc_frame .fc-widget-btn { display: none !important; }';
+
+    if (window.fcWidget) {
+      watchAndHideBubble();
       window.fcWidget.show();
       window.fcWidget.open();
+      /* After chat opens, re-apply full hide so bubble never shows */
+      setTimeout(function() {
+        forceHideBubble();
+        /* Freshchat may re-inject the bubble — keep hiding it */
+        var bubbleWatcher = setInterval(function() {
+          var frame = document.getElementById('fc_frame');
+          if (frame) {
+            var btn = frame.querySelector('.fc-widget-btn, [class*="launcher"]');
+            if (btn) btn.style.cssText = 'display:none!important';
+          }
+        }, 300);
+        /* Store watcher so we can clear if needed */
+        window._bubbleWatcher = bubbleWatcher;
+      }, 500);
       if (flowSummary) {
         setTimeout(function() {
           window.fcWidget.send({ text: flowSummary });
-        }, 800);
+        }, 1000);
       }
     } else {
       setTimeout(function() {
         if (window.fcWidget) {
+          watchAndHideBubble();
           window.fcWidget.show();
           window.fcWidget.open();
+          setTimeout(forceHideBubble, 500);
           if (flowSummary) {
             setTimeout(function() {
               window.fcWidget.send({ text: flowSummary });
-            }, 800);
+            }, 1000);
           }
         }
       }, 1500);
