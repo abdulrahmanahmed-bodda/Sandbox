@@ -834,23 +834,55 @@
 
   function startChat(context) {
     closePrechat();
-    if (window.fcWidget) {
-      window.fcWidget.show();
-      window.fcWidget.open({ name: context });
+    if (window.openFreshchat) {
+      window.openFreshchat();
     } else {
-      alert('Chat widget is loading, please try again in a moment.');
+      setTimeout(function() {
+        if (window.openFreshchat) window.openFreshchat();
+      }, 1500);
     }
   }
 
-  /* Load Freshchat but hide default launcher — we use our own */
+  /* Force hide native Freshchat bubble — we use our own launcher */
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
     host: "https://wchat-fs.freshchat.com",
-    config: {
-      hideFAB: true
-    },
+    config: { hideFAB: true },
     onInit: function() {
-      if (window.fcWidget) window.fcWidget.hide();
+      window.fcWidget.hide();
+      window.fcWidget.on('widget:loaded', function() {
+        window.fcWidget.hide();
+      });
+    }
+  };
+
+  /* CSS force-hide as fallback */
+  var style = document.createElement('style');
+  style.textContent = '#fc_frame, #freshchat-container, .fc-widget-container { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }';
+  document.head.appendChild(style);
+
+  /* Re-hide every 500ms for first 5 seconds in case widget overrides */
+  var hideInterval = setInterval(function() {
+    if (window.fcWidget) {
+      window.fcWidget.hide();
+    }
+  }, 500);
+  setTimeout(function() { clearInterval(hideInterval); }, 5000);
+
+  /* When startChat is called, temporarily show the widget then open it */
+  window.openFreshchat = function() {
+    style.textContent = '';
+    clearInterval(hideInterval);
+    if (window.fcWidget) {
+      window.fcWidget.show();
+      window.fcWidget.open();
+    } else {
+      setTimeout(function() {
+        if (window.fcWidget) {
+          window.fcWidget.show();
+          window.fcWidget.open();
+        }
+      }, 1500);
     }
   };
 </script>
