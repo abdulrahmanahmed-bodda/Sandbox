@@ -600,11 +600,342 @@
   }, 3000);
 </script>
 
-<!-- Freshchat Live Chat Widget -->
+<!-- Pre-chat FAQ Flow + Freshchat -->
+<style>
+  #prechat-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.55);
+    align-items: flex-end; justify-content: flex-end;
+    padding: 0 24px 90px;
+  }
+  #prechat-overlay.show { display: flex; }
+  #prechat-box {
+    width: 360px;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popUp 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes popUp {
+    from { opacity:0; transform: translateY(20px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+  #prechat-header {
+    background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
+    padding: 1.25rem 1.25rem 1rem;
+    color: #fff;
+  }
+  #prechat-header .brand { font-size: 0.75rem; opacity: 0.8; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
+  #prechat-header h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin: 0 0 0.25rem; }
+  #prechat-header p  { font-size: 0.8rem; opacity: 0.85; margin: 0; }
+  #prechat-close {
+    float: right; background: rgba(255,255,255,0.2); border: none;
+    color: #fff; width: 28px; height: 28px; border-radius: 50%;
+    font-size: 1rem; cursor: pointer; line-height: 28px; text-align: center;
+    margin-top: -4px;
+  }
+  #prechat-body { padding: 1rem; max-height: 420px; overflow-y: auto; }
+
+  .faq-step { display: none; }
+  .faq-step.active { display: block; }
+
+  .step-label { font-size: 0.7rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .step-question { font-size: 0.9rem; font-weight: 500; color: #1a1a2e; margin-bottom: 0.75rem; line-height: 1.5; }
+
+  .faq-btn {
+    display: flex; align-items: center; gap: 0.6rem;
+    width: 100%; text-align: left;
+    background: #f7f7fb; border: 1px solid #e8e8f0;
+    border-radius: 10px; padding: 0.65rem 0.85rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    color: #1a1a2e; cursor: pointer; margin-bottom: 0.5rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .faq-btn:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
+  .faq-btn .icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  .answer-box {
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    border-radius: 10px; padding: 0.85rem 1rem;
+    font-size: 0.85rem; color: #166534; line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .prechat-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .btn-chat {
+    flex: 1; background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
+    color: #fff; border: none; border-radius: 8px;
+    padding: 0.65rem 1rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-chat:hover { opacity: 0.88; }
+  .btn-back {
+    background: #f7f7fb; border: 1px solid #e8e8f0;
+    color: #555; border-radius: 8px;
+    padding: 0.65rem 1rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; cursor: pointer;
+  }
+  .btn-back:hover { background: #ede9fe; border-color: #7c5cfc; color: #5a3fcc; }
+
+  #fc-launcher {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9998;
+    background: linear-gradient(135deg, #7c5cfc, #5a3fcc);
+    color: #fff; border: none; border-radius: 50px;
+    padding: 0.75rem 1.4rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(124,92,252,0.45);
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  #fc-launcher:hover { transform: translateY(-2px); opacity: 0.92; }
+  #fc-launcher.hidden { display: none; }
+
+  .breadcrumb {
+    font-size: 0.72rem; color: #aaa; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;
+  }
+  .breadcrumb span { color: #7c5cfc; cursor: pointer; }
+  .breadcrumb span:hover { text-decoration: underline; }
+</style>
+
+<!-- Custom launcher button -->
+<button id="fc-launcher" onclick="openPrechat()">
+  💬 Chat with us
+</button>
+
+<!-- Pre-chat overlay -->
+<div id="prechat-overlay">
+  <div id="prechat-box">
+    <div id="prechat-header">
+      <button id="prechat-close" onclick="closePrechat()">✕</button>
+      <div class="brand">Bosta Logistics Support</div>
+      <h3 id="header-title">How can we help?</h3>
+      <p id="header-sub">Select a topic or chat with an agent</p>
+    </div>
+    <div id="prechat-body">
+
+      <!-- Step 1: Main topics -->
+      <div class="faq-step active" id="step-main">
+        <div class="step-label">Choose a topic</div>
+        <button class="faq-btn" onclick="showTopic('shipment')"><span class="icon">📦</span> Shipment tracking & status</button>
+        <button class="faq-btn" onclick="showTopic('pickup')"><span class="icon">🚚</span> Pickup scheduling & issues</button>
+        <button class="faq-btn" onclick="showTopic('delivery')"><span class="icon">🏠</span> Delivery problems & delays</button>
+        <button class="faq-btn" onclick="showTopic('returns')"><span class="icon">↩️</span> Returns & reverse logistics</button>
+        <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">💳</span> Billing, invoices & pricing</button>
+        <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">🔗</span> API & system integration</button>
+        <button class="faq-btn" onclick="showTopic('account')"><span class="icon">👤</span> Account & contract management</button>
+        <button class="faq-btn" onclick="startChat('general')"><span class="icon">💬</span> Other — chat with an agent</button>
+      </div>
+
+      <!-- Step 2a: Shipment -->
+      <div class="faq-step" id="step-shipment">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Shipment tracking
+        </div>
+        <div class="step-label">Shipment tracking</div>
+        <button class="faq-btn" onclick="showAnswer('track-order')"><span class="icon">🔍</span> How do I track my shipment?</button>
+        <button class="faq-btn" onclick="showAnswer('lost-shipment')"><span class="icon">❓</span> My shipment shows lost or stuck</button>
+        <button class="faq-btn" onclick="showAnswer('status-not-updating')"><span class="icon">🔄</span> Tracking status not updating</button>
+        <button class="faq-btn" onclick="startChat('shipment')"><span class="icon">💬</span> My issue isn't listed — chat now</button>
+      </div>
+
+      <!-- Step 2b: Pickup -->
+      <div class="faq-step" id="step-pickup">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Pickup
+        </div>
+        <div class="step-label">Pickup scheduling</div>
+        <button class="faq-btn" onclick="showAnswer('schedule-pickup')"><span class="icon">📅</span> How do I schedule a pickup?</button>
+        <button class="faq-btn" onclick="showAnswer('missed-pickup')"><span class="icon">⚠️</span> Courier didn't show up for pickup</button>
+        <button class="faq-btn" onclick="showAnswer('pickup-cutoff')"><span class="icon">⏰</span> What is the pickup cutoff time?</button>
+        <button class="faq-btn" onclick="startChat('pickup')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step 2c: Delivery -->
+      <div class="faq-step" id="step-delivery">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Delivery
+        </div>
+        <div class="step-label">Delivery issues</div>
+        <button class="faq-btn" onclick="showAnswer('delayed-delivery')"><span class="icon">⏳</span> My delivery is delayed</button>
+        <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">📍</span> Delivered to wrong address</button>
+        <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">📦</span> Package arrived damaged</button>
+        <button class="faq-btn" onclick="startChat('delivery')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step 2d: Returns -->
+      <div class="faq-step" id="step-returns">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Returns
+        </div>
+        <div class="step-label">Returns & reverse logistics</div>
+        <button class="faq-btn" onclick="showAnswer('initiate-return')"><span class="icon">↩️</span> How do I initiate a return?</button>
+        <button class="faq-btn" onclick="showAnswer('return-status')"><span class="icon">🔍</span> Track my return shipment</button>
+        <button class="faq-btn" onclick="showAnswer('return-policy')"><span class="icon">📋</span> What is your return policy?</button>
+        <button class="faq-btn" onclick="startChat('returns')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step 2e: Billing -->
+      <div class="faq-step" id="step-billing">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Billing
+        </div>
+        <div class="step-label">Billing & pricing</div>
+        <button class="faq-btn" onclick="showAnswer('invoice')"><span class="icon">🧾</span> Where can I find my invoice?</button>
+        <button class="faq-btn" onclick="showAnswer('pricing')"><span class="icon">💰</span> How is shipping cost calculated?</button>
+        <button class="faq-btn" onclick="showAnswer('dispute')"><span class="icon">⚠️</span> I want to dispute a charge</button>
+        <button class="faq-btn" onclick="startChat('billing')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step 2f: Integration -->
+      <div class="faq-step" id="step-integration">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › API & Integration
+        </div>
+        <div class="step-label">API & system integration</div>
+        <button class="faq-btn" onclick="showAnswer('api-docs')"><span class="icon">📄</span> Where are the API docs?</button>
+        <button class="faq-btn" onclick="showAnswer('webhook')"><span class="icon">🔔</span> How do webhooks work?</button>
+        <button class="faq-btn" onclick="showAnswer('api-error')"><span class="icon">🐛</span> I'm getting API errors</button>
+        <button class="faq-btn" onclick="startChat('integration')"><span class="icon">💬</span> Chat with a tech agent</button>
+      </div>
+
+      <!-- Step 2g: Account -->
+      <div class="faq-step" id="step-account">
+        <div class="breadcrumb">
+          <span onclick="backToMain()">Topics</span> › Account
+        </div>
+        <div class="step-label">Account & contracts</div>
+        <button class="faq-btn" onclick="showAnswer('reset-password')"><span class="icon">🔐</span> Reset my password</button>
+        <button class="faq-btn" onclick="showAnswer('add-user')"><span class="icon">👥</span> Add a team member to my account</button>
+        <button class="faq-btn" onclick="showAnswer('contract')"><span class="icon">📝</span> Questions about my contract</button>
+        <button class="faq-btn" onclick="startChat('account')"><span class="icon">💬</span> Chat with an agent</button>
+      </div>
+
+      <!-- Step 3: Answer view -->
+      <div class="faq-step" id="step-answer">
+        <div class="breadcrumb" id="answer-breadcrumb"></div>
+        <div class="step-label">Answer</div>
+        <div class="answer-box" id="answer-text"></div>
+        <p style="font-size:0.8rem;color:#888;margin-bottom:0.75rem;">Was this helpful? If not, our agents are here.</p>
+        <div class="prechat-actions">
+          <button class="btn-back" id="answer-back-btn" onclick="backFromAnswer()">← Back</button>
+          <button class="btn-chat" onclick="startChat('answer')">💬 Chat with an agent</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
+  var currentTopic = 'main';
+
+  var answers = {
+    'track-order':       { text: 'Log in to your Bosta dashboard and go to Shipments → Tracking. Enter your AWB number to see real-time status updates and courier location.', back: 'shipment' },
+    'lost-shipment':     { text: 'If your shipment shows "lost" or has had no movement for 5+ business days, please chat with us so we can file an investigation with the courier team.', back: 'shipment' },
+    'status-not-updating': { text: 'Status updates can take up to 2 hours after a scan event. If it has been more than 24 hours with no update, please contact our support team.', back: 'shipment' },
+    'schedule-pickup':   { text: 'Go to Dashboard → Create Shipment → Schedule Pickup. You can book same-day pickup if requested before 12:00 PM, or next-day pickup anytime.', back: 'pickup' },
+    'missed-pickup':     { text: 'We apologise for the inconvenience. Please chat with us with your pickup order ID and we will reschedule your pickup as a priority.', back: 'pickup' },
+    'pickup-cutoff':     { text: 'The cutoff time for same-day pickup is 12:00 PM. Orders placed after that will be scheduled for the next business day.', back: 'pickup' },
+    'delayed-delivery':  { text: 'Deliveries may be delayed due to high volume, weather, or address issues. Check your tracking page for the latest ETA or chat with us to investigate.', back: 'delivery' },
+    'wrong-address':     { text: 'Please chat with us immediately with your AWB number. We will coordinate with the courier to correct the delivery address or arrange a re-delivery.', back: 'delivery' },
+    'damaged':           { text: 'Take photos of the damaged package and item, then chat with us within 48 hours of delivery. We will open a claim with our insurance and courier team.', back: 'delivery' },
+    'initiate-return':   { text: 'Go to Dashboard → Shipments → find your order → click "Create Return". Our courier will pick up the item from the end customer within 1-3 business days.', back: 'returns' },
+    'return-status':     { text: 'Return shipments can be tracked using the reverse AWB number found in Dashboard → Returns. Status updates in real time just like forward shipments.', back: 'returns' },
+    'return-policy':     { text: 'Returns are accepted within 14 days of delivery. The item must be in original condition. Bosta covers return courier costs for eligible claims.', back: 'returns' },
+    'invoice':           { text: 'Invoices are auto-generated on the 1st of each month and sent to your registered email. You can also download them from Dashboard → Billing → Invoices.', back: 'billing' },
+    'pricing':           { text: 'Shipping costs are calculated based on package weight, dimensions, destination zone, and your contracted rate. View your rate card in Dashboard → Billing → Rate Card.', back: 'billing' },
+    'dispute':           { text: 'To dispute a charge, go to Dashboard → Billing → find the charge → click "Dispute". Or chat with us and our billing team will review within 2 business days.', back: 'billing' },
+    'api-docs':          { text: 'Our full API documentation is available at docs.bosta.co. You will find REST endpoints, webhooks, authentication guides, and code samples.', back: 'integration' },
+    'webhook':           { text: 'Webhooks notify your system of shipment events in real time. Configure them in Dashboard → Settings → Webhooks. Supported events include created, picked_up, delivered, and failed.', back: 'integration' },
+    'api-error':         { text: 'Common API errors: 401 = invalid API key, 422 = missing required fields, 429 = rate limit exceeded. Check our docs or chat with our tech team for help.', back: 'integration' },
+    'reset-password':    { text: 'Go to bosta.co/login → click "Forgot Password" → enter your email. You will receive a reset link within 5 minutes. Check your spam folder if you don\'t see it.', back: 'account' },
+    'add-user':          { text: 'Go to Dashboard → Settings → Team Members → Invite User. Enter their email and assign a role (Admin, Operations, Finance). They will receive an invite email.', back: 'account' },
+    'contract':          { text: 'For contract renewals, amendments, or pricing negotiations please chat with us and your dedicated account manager will reach out within 1 business day.', back: 'account' }
+  };
+
+  function openPrechat() {
+    document.getElementById('prechat-overlay').classList.add('show');
+    document.getElementById('fc-launcher').classList.add('hidden');
+  }
+
+  function closePrechat() {
+    document.getElementById('prechat-overlay').classList.remove('show');
+    document.getElementById('fc-launcher').classList.remove('hidden');
+  }
+
+  function showTopic(topic) {
+    currentTopic = topic;
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + topic).classList.add('active');
+    document.getElementById('header-title').textContent = topicTitle(topic);
+    document.getElementById('header-sub').textContent = 'Select your question below';
+  }
+
+  function topicTitle(t) {
+    var titles = {
+      shipment: 'Shipment tracking',
+      pickup: 'Pickup issues',
+      delivery: 'Delivery problems',
+      returns: 'Returns & reverse logistics',
+      billing: 'Billing & invoices',
+      integration: 'API & integration',
+      account: 'Account management'
+    };
+    return titles[t] || 'How can we help?';
+  }
+
+  function backToMain() {
+    currentTopic = 'main';
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-main').classList.add('active');
+    document.getElementById('header-title').textContent = 'How can we help?';
+    document.getElementById('header-sub').textContent = 'Select a topic or chat with an agent';
+  }
+
+  function showAnswer(key) {
+    var a = answers[key];
+    if (!a) return;
+    document.getElementById('answer-text').textContent = a.text;
+    document.getElementById('answer-back-btn').setAttribute('data-back', a.back);
+    document.getElementById('answer-breadcrumb').innerHTML =
+      '<span onclick="backToMain()">Topics</span> › ' +
+      '<span onclick="showTopic(\'' + a.back + '\')">' + topicTitle(a.back) + '</span> › Answer';
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-answer').classList.add('active');
+    document.getElementById('header-title').textContent = 'Answer';
+    document.getElementById('header-sub').textContent = 'Still need help? Chat with us';
+  }
+
+  function backFromAnswer() {
+    var back = document.getElementById('answer-back-btn').getAttribute('data-back') || 'main';
+    if (back === 'main') backToMain(); else showTopic(back);
+  }
+
+  function startChat(context) {
+    closePrechat();
+    if (window.fcWidget) {
+      window.fcWidget.show();
+      window.fcWidget.open({ name: context });
+    } else {
+      alert('Chat widget is loading, please try again in a moment.');
+    }
+  }
+
+  /* Load Freshchat but hide default launcher — we use our own */
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
-    host: "https://wchat-fs.freshchat.com"
+    host: "https://wchat-fs.freshchat.com",
+    config: {
+      hideFAB: true
+    },
+    onInit: function() {
+      if (window.fcWidget) window.fcWidget.hide();
+    }
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
