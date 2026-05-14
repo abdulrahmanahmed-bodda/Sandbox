@@ -232,167 +232,168 @@
 </footer>
 
 <!-- Custom launcher -->
-<button id="fc-launcher" onclick="openPrechat()">Chat with us</button>
+<button id="fc-launcher" onclick="openPrechat()">💬 Chat with us</button>
 
 <!-- Pre-chat overlay -->
 <div id="prechat-overlay">
   <div id="prechat-box">
     <div id="prechat-header">
-      <button id="prechat-close" onclick="closePrechat()">X</button>
-      <div class="brand">Bosta Logistics Support</div>
-      <h3 id="header-title">How can we help?</h3>
-      <p id="header-sub">Select a topic or chat with an agent</p>
+      <button id="prechat-close" onclick="closePrechat()">✕</button>
+      <div class="brand">Bosta Logistics &mdash; Support</div>
+      <h3 id="header-title">👋 How can we help?</h3>
+      <p id="header-sub">Select a topic and we'll guide you to the right answer</p>
     </div>
     <div id="prechat-body">
 
       <!-- Main menu -->
       <div class="faq-step active" id="step-main">
-        <div class="step-label">Choose a topic</div>
-        <button class="faq-btn" onclick="showTopic('shipment')"><span class="icon">Box</span> Shipment tracking and status</button>
-        <button class="faq-btn" onclick="showTopic('pickup')"><span class="icon">Truck</span> Pickup scheduling and issues</button>
-        <button class="faq-btn" onclick="showTopic('delivery')"><span class="icon">Home</span> Delivery problems and delays</button>
-        <button class="faq-btn" onclick="showTopic('returns')"><span class="icon">Return</span> Returns and reverse logistics</button>
-        <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">Card</span> Billing, invoices and pricing</button>
-        <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">Link</span> API and system integration</button>
-        <button class="faq-btn" onclick="showTopic('account')"><span class="icon">User</span> Account and contract management</button>
-        <button class="faq-btn" onclick="showTopic('create-order')"><span class="icon">Edit</span> How to create an order</button>
-        <button class="faq-btn" onclick="startChat('general')"><span class="icon">Chat</span> Other -- chat with an agent</button>
+        <div class="step-label">📋 Choose a topic</div>
+        <button class="faq-btn" onclick="showTopic('shipment')"><span class="icon">📦</span><span class="btn-label">Shipment tracking &amp; status</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('pickup')"><span class="icon">🚚</span><span class="btn-label">Pickup scheduling &amp; issues</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('delivery')"><span class="icon">🏠</span><span class="btn-label">Delivery problems &amp; delays</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('returns')"><span class="icon">↩️</span><span class="btn-label">Returns &amp; reverse logistics</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('billing')"><span class="icon">💳</span><span class="btn-label">Billing, invoices &amp; pricing</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('integration')"><span class="icon">🔗</span><span class="btn-label">API &amp; system integration</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('account')"><span class="icon">👤</span><span class="btn-label">Account &amp; contract management</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showTopic('create-order')"><span class="icon">📝</span><span class="btn-label">How to create an order</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('general')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Other &mdash; chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Shipment -->
       <div class="faq-step" id="step-shipment">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Shipment tracking</div>
-        <div class="step-label">Shipment tracking</div>
-        <button class="faq-btn" onclick="showAnswer('track-order')"><span class="icon">Search</span> How do I track my shipment?</button>
-        <button class="faq-btn" onclick="showAnswer('lost-shipment')"><span class="icon">Question</span> My shipment shows lost or stuck</button>
-        <button class="faq-btn" onclick="showAnswer('status-not-updating')"><span class="icon">Refresh</span> Tracking status not updating</button>
-        <button class="faq-btn" onclick="startChat('shipment')"><span class="icon">Chat</span> My issue is not listed -- chat now</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Shipment tracking</div>
+        <div class="step-label">📦 Shipment tracking</div>
+        <button class="faq-btn" onclick="showAnswer('track-order')"><span class="icon">🔍</span><span class="btn-label">How do I track my shipment?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('lost-shipment')"><span class="icon">❓</span><span class="btn-label">My shipment shows lost or stuck</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('status-not-updating')"><span class="icon">🔄</span><span class="btn-label">Tracking status not updating</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('shipment')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">My issue is not listed &mdash; chat now</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Pickup -->
       <div class="faq-step" id="step-pickup">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Pickup</div>
-        <div class="step-label">Pickup scheduling</div>
-        <button class="faq-btn" onclick="showAnswer('schedule-pickup')"><span class="icon">Calendar</span> How do I schedule a pickup?</button>
-        <button class="faq-btn" onclick="showAnswer('missed-pickup')"><span class="icon">Warning</span> Courier did not show up for pickup</button>
-        <button class="faq-btn" onclick="showAnswer('pickup-cutoff')"><span class="icon">Clock</span> What is the pickup cutoff time?</button>
-        <button class="faq-btn" onclick="startChat('pickup')"><span class="icon">Chat</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Pickup</div>
+        <div class="step-label">🚚 Pickup scheduling</div>
+        <button class="faq-btn" onclick="showAnswer('schedule-pickup')"><span class="icon">📅</span><span class="btn-label">How do I schedule a pickup?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('missed-pickup')"><span class="icon">⚠️</span><span class="btn-label">Courier did not show up for pickup</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('pickup-cutoff')"><span class="icon">⏰</span><span class="btn-label">What is the pickup cutoff time?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('pickup')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Delivery -->
       <div class="faq-step" id="step-delivery">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Delivery</div>
-        <div class="step-label">Delivery issues</div>
-        <button class="faq-btn" onclick="showTrackingStep()"><span class="icon">Timer</span> My delivery is delayed</button>
-        <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">Pin</span> Delivered to wrong address</button>
-        <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">Box</span> Package arrived damaged</button>
-        <button class="faq-btn" onclick="startChat('delivery')"><span class="icon">Chat</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Delivery</div>
+        <div class="step-label">🏠 Delivery issues</div>
+        <button class="faq-btn" onclick="showTrackingStep()"><span class="icon">⏳</span><span class="btn-label">My delivery is delayed</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('wrong-address')"><span class="icon">📍</span><span class="btn-label">Delivered to wrong address</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('damaged')"><span class="icon">💔</span><span class="btn-label">Package arrived damaged</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('delivery')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Tracking number input -->
       <div class="faq-step" id="step-tracking-input">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; <span onclick="showTopic('delivery')">Delivery</span> &rsaquo; Delayed delivery</div>
-        <div class="step-label">Check your order status</div>
-        <p style="font-size:0.875rem;color:#444;margin-bottom:1rem;line-height:1.6;">Please enter your tracking number so we can check the status of your shipment.</p>
-        <input id="tracking-input" type="text" placeholder="e.g. BST-123456789" style="width:100%;padding:0.65rem 0.85rem;border:1px solid #e8e8f0;border-radius:10px;font-size:0.875rem;font-family:DM Sans,sans-serif;outline:none;margin-bottom:0.75rem;color:#1a1a2e;" />
-        <div id="tracking-error" style="display:none;font-size:0.78rem;color:#dc2626;margin-bottom:0.5rem;">Please enter a valid tracking number.</div>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span><span onclick="showTopic('delivery')">Delivery</span><span class="sep">›</span>Delayed delivery</div>
+        <div class="step-label">🔍 Check your order status</div>
+        <div style="background:#f5f0ff;border:1.5px solid #d4c9ff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#4c3a8a;line-height:1.6;">
+          <strong>⏳ Before contacting support</strong><br>Please enter your tracking number so we can check if your order is still within the normal delivery window.
+        </div>
+        <input id="tracking-input" type="text" placeholder="e.g. BST-123456789" style="width:100%;padding:0.7rem 1rem;border:1.5px solid #e0d9ff;border-radius:10px;font-size:0.875rem;font-family:Inter,sans-serif;outline:none;margin-bottom:0.5rem;color:#1a1a2e;background:#fafafa;transition:border-color 0.2s;" onfocus="this.style.borderColor='#7c5cfc'" onblur="this.style.borderColor='#e0d9ff'" />
+        <div id="tracking-error" style="display:none;font-size:0.78rem;color:#dc2626;margin-bottom:0.5rem;padding:0.4rem 0.75rem;background:#fef2f2;border-radius:6px;">⚠️ Please enter a valid tracking number.</div>
         <div class="prechat-actions">
-          <button class="btn-back" onclick="showTopic('delivery')">Back</button>
-          <button class="btn-chat" onclick="checkTracking()">Check status</button>
+          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
+          <button class="btn-chat" onclick="checkTracking()">🔍 Check status</button>
         </div>
       </div>
 
-      <!-- Blocked - within normal delivery times -->
+      <!-- Blocked -->
       <div class="faq-step" id="step-tracking-blocked">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; <span onclick="showTopic('delivery')">Delivery</span> &rsaquo; Delayed delivery</div>
-        <div class="step-label">Order status</div>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1rem;margin-bottom:0.85rem;">
-          <div style="font-size:1.1rem;margin-bottom:0.4rem;">OK</div>
-          <div style="font-weight:500;font-size:0.875rem;color:#166534;margin-bottom:0.35rem;">Your order is on its way!</div>
-          <div style="font-size:0.82rem;color:#166534;line-height:1.6;">Tracking number <strong id="blocked-tracking-num"></strong> is still within the normal delivery timeframe of <strong>3 to 5 business days</strong>. Please allow until the estimated delivery date before contacting support.</div>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span><span onclick="showTopic('delivery')">Delivery</span><span class="sep">›</span>Status check</div>
+        <div class="step-label">📊 Order status</div>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:14px;padding:1.1rem 1.1rem;margin-bottom:0.85rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:0.5rem;">🚀</div>
+          <div style="font-weight:700;font-size:0.95rem;color:#14532d;margin-bottom:0.4rem;">Your order is on its way!</div>
+          <div style="font-size:0.8rem;color:#166534;line-height:1.6;">Tracking <strong id="blocked-tracking-num" style="background:#bbf7d0;padding:0.1rem 0.4rem;border-radius:4px;"></strong> is within the normal <strong>3–5 business day</strong> delivery window.</div>
         </div>
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:0.85rem;margin-bottom:0.85rem;font-size:0.82rem;color:#9a3412;line-height:1.6;">
-          Tip: You can track your shipment in real time from your Bosta dashboard under Shipments then Tracking.
+        <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.85rem;font-size:0.81rem;color:#9a3412;line-height:1.65;">
+          💡 <strong>Track in real time:</strong> Log in to your Bosta dashboard and go to <strong>Shipments → Tracking</strong> to see live courier updates.
         </div>
         <div class="prechat-actions">
-          <button class="btn-back" onclick="showTopic('delivery')">Back</button>
-          <button class="btn-chat" style="background:#e5e7eb;color:#6b7280;cursor:not-allowed;" disabled>Chat unavailable</button>
+          <button class="btn-back" onclick="showTopic('delivery')">← Back</button>
+          <button class="btn-chat" style="background:#e5e7eb;color:#9ca3af;cursor:not-allowed;box-shadow:none;" disabled>🔒 Chat unavailable</button>
         </div>
-        <p style="font-size:0.75rem;color:#aaa;margin-top:0.5rem;text-align:center;">Chat support for delays is only available after the estimated delivery date has passed.</p>
+        <p style="font-size:0.72rem;color:#c0b8d8;margin-top:0.75rem;text-align:center;">💬 Support chat for delays opens after your estimated delivery date passes.</p>
       </div>
 
       <!-- Returns -->
       <div class="faq-step" id="step-returns">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Returns</div>
-        <div class="step-label">Returns and reverse logistics</div>
-        <button class="faq-btn" onclick="showAnswer('initiate-return')"><span class="icon">Return</span> How do I initiate a return?</button>
-        <button class="faq-btn" onclick="showAnswer('return-status')"><span class="icon">Search</span> Track my return shipment</button>
-        <button class="faq-btn" onclick="showAnswer('return-policy')"><span class="icon">Doc</span> What is your return policy?</button>
-        <button class="faq-btn" onclick="startChat('returns')"><span class="icon">Chat</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Returns</div>
+        <div class="step-label">↩️ Returns &amp; reverse logistics</div>
+        <button class="faq-btn" onclick="showAnswer('initiate-return')"><span class="icon">↩️</span><span class="btn-label">How do I initiate a return?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('return-status')"><span class="icon">🔍</span><span class="btn-label">Track my return shipment</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('return-policy')"><span class="icon">📋</span><span class="btn-label">What is your return policy?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('returns')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Billing -->
       <div class="faq-step" id="step-billing">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Billing</div>
-        <div class="step-label">Billing and pricing</div>
-        <button class="faq-btn" onclick="showAnswer('invoice')"><span class="icon">Receipt</span> Where can I find my invoice?</button>
-        <button class="faq-btn" onclick="showAnswer('pricing')"><span class="icon">Money</span> How is shipping cost calculated?</button>
-        <button class="faq-btn" onclick="showAnswer('dispute')"><span class="icon">Warning</span> I want to dispute a charge</button>
-        <button class="faq-btn" onclick="startChat('billing')"><span class="icon">Chat</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Billing</div>
+        <div class="step-label">💳 Billing &amp; pricing</div>
+        <button class="faq-btn" onclick="showAnswer('invoice')"><span class="icon">🧾</span><span class="btn-label">Where can I find my invoice?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('pricing')"><span class="icon">💰</span><span class="btn-label">How is shipping cost calculated?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('dispute')"><span class="icon">⚠️</span><span class="btn-label">I want to dispute a charge</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('billing')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Integration -->
       <div class="faq-step" id="step-integration">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; API and Integration</div>
-        <div class="step-label">API and system integration</div>
-        <button class="faq-btn" onclick="showAnswer('api-docs')"><span class="icon">Doc</span> Where are the API docs?</button>
-        <button class="faq-btn" onclick="showAnswer('webhook')"><span class="icon">Bell</span> How do webhooks work?</button>
-        <button class="faq-btn" onclick="showAnswer('api-error')"><span class="icon">Bug</span> I am getting API errors</button>
-        <button class="faq-btn" onclick="startChat('integration')"><span class="icon">Chat</span> Chat with a tech agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>API &amp; Integration</div>
+        <div class="step-label">🔗 API &amp; system integration</div>
+        <button class="faq-btn" onclick="showAnswer('api-docs')"><span class="icon">📄</span><span class="btn-label">Where are the API docs?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('webhook')"><span class="icon">🔔</span><span class="btn-label">How do webhooks work?</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('api-error')"><span class="icon">🐛</span><span class="btn-label">I am getting API errors</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('integration')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with a tech agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Account -->
       <div class="faq-step" id="step-account">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; Account</div>
-        <div class="step-label">Account and contracts</div>
-        <button class="faq-btn" onclick="showAnswer('reset-password')"><span class="icon">Lock</span> Reset my password</button>
-        <button class="faq-btn" onclick="showAnswer('add-user')"><span class="icon">Users</span> Add a team member to my account</button>
-        <button class="faq-btn" onclick="showAnswer('contract')"><span class="icon">Doc</span> Questions about my contract</button>
-        <button class="faq-btn" onclick="startChat('account')"><span class="icon">Chat</span> Chat with an agent</button>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>Account</div>
+        <div class="step-label">👤 Account &amp; contracts</div>
+        <button class="faq-btn" onclick="showAnswer('reset-password')"><span class="icon">🔐</span><span class="btn-label">Reset my password</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('add-user')"><span class="icon">👥</span><span class="btn-label">Add a team member to my account</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="showAnswer('contract')"><span class="icon">📝</span><span class="btn-label">Questions about my contract</span><span class="arrow">›</span></button>
+        <button class="faq-btn" onclick="startChat('account')" style="border-color:#d4c9ff;background:#f5f0ff;"><span class="icon">💬</span><span class="btn-label" style="color:#5a3fcc;font-weight:600;">Chat with an agent</span><span class="arrow" style="color:#9b7aff;">›</span></button>
       </div>
 
       <!-- Create order -->
       <div class="faq-step" id="step-create-order">
-        <div class="breadcrumb"><span onclick="backToMain()">Topics</span> &rsaquo; How to create an order</div>
-        <div class="step-label">How to create an order</div>
-        <div style="font-size:0.875rem;color:#444;line-height:1.75;margin-bottom:1rem;">
-          Follow these steps to create a new shipment order on Bosta:
-          <ol style="margin:0.75rem 0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:0.5rem;">
-            <li><strong>Log in</strong> to your Bosta dashboard at app.bosta.co</li>
-            <li>Click <strong>New Shipment</strong> from the top right or the sidebar</li>
-            <li>Enter the <strong>recipient details</strong> -- name, phone, and address</li>
-            <li>Fill in the <strong>package details</strong> -- weight, dimensions, and COD amount if applicable</li>
-            <li>Select your preferred <strong>pickup date and time slot</strong></li>
-            <li>Review the order summary and click <strong>Confirm Shipment</strong></li>
-            <li>Your <strong>AWB number</strong> will be generated -- print the label and attach it to your package</li>
-            <li>The courier will arrive at your pickup address on the scheduled date</li>
+        <div class="breadcrumb"><span onclick="backToMain()">🏠 Home</span><span class="sep">›</span>How to create an order</div>
+        <div class="step-label">📝 Step-by-step guide</div>
+        <div style="font-size:0.84rem;color:#2d2550;line-height:1.8;margin-bottom:1rem;">
+          <ol style="margin:0;padding:0 0 0 1.2rem;display:flex;flex-direction:column;gap:0.55rem;">
+            <li>🔑 <strong>Log in</strong> to your dashboard at <span style="color:#7c5cfc;font-weight:600;">app.bosta.co</span></li>
+            <li>➕ Click <strong>New Shipment</strong> from the sidebar</li>
+            <li>👤 Enter <strong>recipient details</strong> — name, phone, address</li>
+            <li>📦 Fill in <strong>package details</strong> — weight, dimensions, COD</li>
+            <li>📅 Select your <strong>pickup date and time slot</strong></li>
+            <li>✅ Review and click <strong>Confirm Shipment</strong></li>
+            <li>🏷️ Print your <strong>AWB label</strong> and attach it to the package</li>
+            <li>🚚 Courier arrives on the <strong>scheduled pickup date</strong></li>
           </ol>
         </div>
-        <div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#4c1d95;margin-bottom:1rem;line-height:1.6;">
-          Tip: You can also create bulk orders via CSV upload or through the Bosta API. Check docs.bosta.co for details.
+        <div style="background:#f5f0ff;border:1.5px solid #d4c9ff;border-radius:12px;padding:0.8rem 1rem;font-size:0.8rem;color:#4c3a8a;line-height:1.6;margin-bottom:1rem;">
+          💡 <strong>Pro tip:</strong> Create bulk orders via CSV upload or the Bosta API. Docs at <span style="color:#7c5cfc;">docs.bosta.co</span>
         </div>
-        <button class="btn-chat" style="width:100%;" onclick="backToMain()">Got it -- back to menu</button>
+        <button class="btn-chat" style="width:100%;font-size:0.9rem;" onclick="backToMain()">✓ Got it — back to main menu</button>
       </div>
 
       <!-- Answer view -->
       <div class="faq-step" id="step-answer">
         <div class="breadcrumb" id="answer-breadcrumb"></div>
-        <div class="step-label">Answer</div>
+        <div class="step-label">💡 Answer</div>
         <div class="answer-box" id="answer-text"></div>
-        <p style="font-size:0.8rem;color:#888;margin-bottom:0.75rem;">Was this helpful? If not, our agents are here.</p>
+        <p style="font-size:0.78rem;color:#b0aac8;margin-bottom:0.75rem;text-align:center;">Still not resolved? Our agents are ready to help 👇</p>
         <div class="prechat-actions">
-          <button class="btn-back" id="answer-back-btn" onclick="backFromAnswer()">Back</button>
-          <button class="btn-chat" onclick="startChat('answer')">Chat with an agent</button>
+          <button class="btn-back" id="answer-back-btn" onclick="backFromAnswer()">← Back</button>
+          <button class="btn-chat" onclick="startChat('answer')">💬 Chat with an agent</button>
         </div>
       </div>
 
@@ -514,12 +515,8 @@
     var val = document.getElementById('tracking-input').value.trim();
     if (!val) { document.getElementById('tracking-error').style.display = 'block'; return; }
     document.getElementById('tracking-error').style.display = 'none';
-    recordStep('Tracking: ' + val);
-    document.getElementById('blocked-tracking-num').textContent = val;
-    document.querySelectorAll('.faq-step').forEach(function(s) { s.classList.remove('active'); });
-    document.getElementById('step-tracking-blocked').classList.add('active');
-    document.getElementById('header-title').textContent = 'Order is on its way';
-    document.getElementById('header-sub').textContent = 'Within normal delivery times';
+    recordStep('Delayed delivery - Tracking: ' + val);
+    startChat('delayed-delivery');
   }
 
   function startChat(context) {
