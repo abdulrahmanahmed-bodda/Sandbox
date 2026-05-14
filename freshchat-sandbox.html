@@ -568,7 +568,7 @@
   window.openFreshchat = function(flowSummary) {
     function doOpen() {
 
-      /* 1. Set user meta — shows in agent contact panel */
+      /* Set user meta */
       try {
         window.fcWidget.user.setMeta({
           pre_chat_topic:    flowPath[0] || '',
@@ -578,22 +578,27 @@
         });
       } catch(e) {}
 
-      /* 2. Listen for conversation:created then immediately send the summary */
+      /* Open on the correct topic — must match EXACTLY your Freshchat topic name */
+      try {
+        window.fcWidget.open({ topic: 'Chat with us' });
+      } catch(e) {
+        window.fcWidget.open();
+      }
+
+      window.fcWidget.show();
+
+      /* Send flow summary on conversation:created */
       try {
         window.fcWidget.on('conversation:created', function() {
           setTimeout(function() {
             try { window.fcWidget.send({ text: flowSummary }); } catch(e) {}
-          }, 300);
+          }, 500);
         });
       } catch(e) {}
 
-      /* 3. Also try sending after open with increasing delays as fallback */
-      window.fcWidget.show();
-      window.fcWidget.open();
-
-      var delays = [500, 1000, 1500, 2500];
+      /* Fallback timed sends */
       var sent = false;
-      delays.forEach(function(delay) {
+      [800, 1500, 2500, 4000].forEach(function(delay) {
         setTimeout(function() {
           if (sent) return;
           try {
@@ -609,7 +614,6 @@
       });
     }
 
-    /* Wait for widget to be fully initialized */
     var checks = 0;
     var waitReady = setInterval(function() {
       checks++;
@@ -624,7 +628,11 @@
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
     host: "https://wchat-fs.freshchat.com",
-    config: { hideFAB: true }
+    config: {
+      hideFAB: true,
+      showFAQOnOpen: false,
+      open: false
+    }
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
