@@ -614,50 +614,55 @@
           if (pollCount >= 10) clearInterval(pollInterval);
         }, 1000);
 
-        /* Also capture user info for Typeform */
+        /* Fetch user info via REST API — more reliable than fcWidget.user.get() */
         try {
-          window.fcWidget.user.get(function(resp) {
+          window.fcWidget.user.get().then(function(resp) {
             if (resp && resp.data) {
               window._fcUser = {
                 email:     resp.data.email || '',
                 firstName: resp.data.firstName || '',
                 lastName:  resp.data.lastName || '',
-                phone:     resp.data.phone || ''
+                alias:     resp.data.alias || ''
               };
+              console.log('User info captured:', window._fcUser);
             }
-          });
+          }).catch(function() {});
         } catch(e) {}
 
-        /* Show Typeform when conversation is resolved — capture agent name and fetch conv ID */
+        /* Show Typeform when conversation is resolved */
         try {
           window.fcWidget.on('conversation:resolved', function(resp) {
-            try {
-              var agentName = resp && resp.data && resp.data.agentName;
-              if (agentName) window._agentName = agentName;
 
-              /* Try to get conversation ID from the resolved event data */
-              var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
-              if (convId) window._conversationId = convId;
+            /* Try event data first */
+            try {
+              var d = resp && resp.data;
+              if (d && (d.conversationId || d.conversation_id)) window._conversationId = d.conversationId || d.conversation_id;
+              if (d && d.agentName) window._agentName = d.agentName;
+              console.log('Resolved event data:', JSON.stringify(d));
             } catch(e) {}
 
-            /* If still no conversation ID, fetch latest conversation from REST API */
-            if (!window._conversationId && window._fcUser && window._fcUser.email) {
-              fetch(FC_API_HOST + '/v2/conversations?email=' + encodeURIComponent(window._fcUser.email) + '&status=resolved&page=1&items_per_page=1', {
-                headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
-              })
-              .then(function(r) { return r.json(); })
-              .then(function(d) {
-                var conv = d && d.conversations && d.conversations[0];
-                if (conv && conv.conversation_id) {
+            /* Fetch conversation details from REST API to get conv ID + agent name */
+            fetch(FC_API_HOST + '/v2/conversations?page=1&items_per_page=1&status=resolved', {
+              headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+              var conv = d && d.conversations && d.conversations[0];
+              if (conv) {
+                if (conv.conversation_id && !window._conversationId) {
                   window._conversationId = conv.conversation_id;
-                  console.log('Conversation ID from API:', window._conversationId);
                 }
-                setTimeout(showTypeform, 800);
-              })
-              .catch(function() { setTimeout(showTypeform, 800); });
-            } else {
-              setTimeout(showTypeform, 800);
-            }
+                if (conv.assigned_agent && conv.assigned_agent.first_name && !window._agentName) {
+                  window._agentName = conv.assigned_agent.first_name + ' ' + (conv.assigned_agent.last_name || '');
+                }
+                console.log('Conversation from API:', conv.conversation_id, 'Agent:', window._agentName);
+              }
+              setTimeout(showTypeform, 500);
+            })
+            .catch(function(err) {
+              console.error('API error:', err);
+              setTimeout(showTypeform, 500);
+            });
           });
         } catch(e) {}
 
@@ -712,6 +717,7 @@
         if (window._fcUser.firstName) params.push('first_name='     + encodeURIComponent(window._fcUser.firstName));
         if (window._fcUser.lastName)  params.push('last_name='      + encodeURIComponent(window._fcUser.lastName));
       }
+      console.log('Typeform params:', params);
 
       var src = 'https://form.typeform.com/to/kAKv5XaO?typeform-welcome=0' + (params.length ? '&' + params.join('&') : '');
       console.log('Typeform URL:', src);
