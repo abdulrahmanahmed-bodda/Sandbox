@@ -629,9 +629,14 @@
           });
         } catch(e) {}
 
-        /* Show Typeform when conversation is resolved — no need to close widget */
+        /* Show Typeform when conversation is resolved — capture agent name too */
         try {
-          window.fcWidget.on('conversation:resolved', function() {
+          window.fcWidget.on('conversation:resolved', function(resp) {
+            /* Try to get agent name from response */
+            try {
+              var agentName = resp && resp.data && resp.data.agentName;
+              if (agentName) window._agentName = agentName;
+            } catch(e) {}
             setTimeout(showTypeform, 800);
           });
         } catch(e) {}
@@ -671,24 +676,43 @@
   function showTypeform() {
     if (typeformShown) return;
     typeformShown = true;
-    var overlay = document.getElementById('tf-overlay');
-    var iframe = document.getElementById('tf-iframe');
 
-    /* Build URL with all Freshchat data as hidden fields */
-    var params = [];
-    if (window._conversationId)          params.push('conversation_id='   + encodeURIComponent(window._conversationId));
-    if (window._lastFlowSummary)         params.push('pre_chat_path='     + encodeURIComponent(window._lastFlowSummary));
-    if (window.flowPath && flowPath[0])  params.push('pre_chat_topic='    + encodeURIComponent(flowPath[0]));
-    if (window.flowPath && flowPath[1])  params.push('pre_chat_question=' + encodeURIComponent(flowPath[1] || ''));
-    if (window._fcUser) {
-      if (window._fcUser.email)      params.push('email='      + encodeURIComponent(window._fcUser.email));
-      if (window._fcUser.firstName)  params.push('first_name=' + encodeURIComponent(window._fcUser.firstName));
-      if (window._fcUser.lastName)   params.push('last_name='  + encodeURIComponent(window._fcUser.lastName));
+    function openForm() {
+      var overlay = document.getElementById('tf-overlay');
+      var iframe  = document.getElementById('tf-iframe');
+
+      var params = [];
+      if (window._conversationId)         params.push('conversation_id='   + encodeURIComponent(window._conversationId));
+      if (window._lastFlowSummary)        params.push('pre_chat_path='     + encodeURIComponent(window._lastFlowSummary));
+      if (window.flowPath && flowPath[0]) params.push('pre_chat_topic='    + encodeURIComponent(flowPath[0]));
+      if (window.flowPath && flowPath[1]) params.push('pre_chat_question=' + encodeURIComponent(flowPath[1] || ''));
+      if (window._agentName)              params.push('agent_name='        + encodeURIComponent(window._agentName));
+      if (window._fcUser) {
+        if (window._fcUser.email)     params.push('customer_email=' + encodeURIComponent(window._fcUser.email));
+        if (window._fcUser.firstName) params.push('first_name='     + encodeURIComponent(window._fcUser.firstName));
+        if (window._fcUser.lastName)  params.push('last_name='      + encodeURIComponent(window._fcUser.lastName));
+      }
+
+      var src = 'https://form.typeform.com/to/kAKv5XaO' + (params.length ? '#' + params.join('&') : '');
+      console.log('Typeform URL:', src);
+      iframe.src = src;
+      overlay.style.display = 'flex';
     }
 
-    var src = 'https://form.typeform.com/to/kAKv5XaO' + (params.length ? '#' + params.join('&') : '');
-    iframe.src = src;
-    overlay.style.display = 'flex';
+    /* Try to get conversation ID at the last moment if not already captured */
+    if (!window._conversationId && window.fcWidget) {
+      try {
+        window.fcWidget.getConversationId().then(function(convId) {
+          if (convId) {
+            window._conversationId = convId;
+            console.log('Conversation ID captured just before Typeform:', convId);
+          }
+          openForm();
+        }).catch(function() { openForm(); });
+      } catch(e) { openForm(); }
+    } else {
+      openForm();
+    }
   }
 
   function closeTypeform() {
