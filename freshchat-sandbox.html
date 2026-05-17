@@ -757,7 +757,7 @@
     if (window._fcUser && window._fcUser.firstName)    params.push('first_name='        + encodeURIComponent(window._fcUser.firstName));
     if (window._fcUser && window._fcUser.email)        params.push('customer_email='    + encodeURIComponent(window._fcUser.email));
 
-    var src = 'https://tally.so/r/2ElxBA?transparentBackground=1' +
+    var src = 'https://tally.so/embed/2ElxBA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1' +
               (params.length ? '&' + params.join('&') : '');
 
     console.log('Tally URL:', src);
