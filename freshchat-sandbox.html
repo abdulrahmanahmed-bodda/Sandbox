@@ -612,12 +612,17 @@
           if (pollCount >= 10) clearInterval(pollInterval);
         }, 1000);
 
+        /* Show Typeform when conversation is resolved — no need to close widget */
+        try {
+          window.fcWidget.on('conversation:resolved', function() {
+            setTimeout(showTypeform, 800);
+          });
+        } catch(e) {}
+
         window.fcWidget.on('widget:closed', function() {
           clearInterval(pollInterval);
           window.fcWidget.hide();
           document.getElementById('fc-launcher').classList.remove('hidden');
-          /* Show Typeform survey after chat closes */
-          setTimeout(showTypeform, 600);
         });
 
       } else {
