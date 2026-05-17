@@ -635,72 +635,46 @@
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
 
-<!-- Typeform Popup SDK -->
-<script src="https://embed.typeform.com/next/embed.js"></script>
+<!-- Typeform Popup - pure iframe, no SDK dependency -->
+<div id="tf-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;overflow:hidden;width:92%;max-width:620px;height:600px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.3);">
+    <div style="background:linear-gradient(135deg,#E30613,#a80000);padding:0.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="font-size:1.1rem;">⭐</span>
+        <span style="color:#fff;font-family:Syne,sans-serif;font-weight:700;font-size:0.92rem;letter-spacing:-0.01em;">How was your experience?</span>
+      </div>
+      <button onclick="closeTypeform()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.25);color:#fff;width:28px;height:28px;border-radius:50%;font-size:0.85rem;cursor:pointer;line-height:28px;text-align:center;flex-shrink:0;">✕</button>
+    </div>
+    <iframe id="tf-iframe" src="" style="width:100%;height:calc(100% - 48px);border:none;" allow="camera;microphone;autoplay;encrypted-media;"></iframe>
+  </div>
+</div>
 
 <script>
   var typeformShown = false;
-  var typeformPopup = null;
 
   function showTypeform() {
     if (typeformShown) return;
     typeformShown = true;
-
-    function doOpen() {
-      try {
-        typeformPopup = window.tf.createPopup('kAKv5XaO', {
-          hidden: { pre_chat_path: window._lastFlowSummary || '' },
-          onClose: function() { typeformShown = false; typeformPopup = null; },
-          onSubmit: function() {
-            setTimeout(function() {
-              if (typeformPopup) typeformPopup.close();
-            }, 1500);
-          }
-        });
-        typeformPopup.open();
-      } catch(e) {
-        console.error('Typeform createPopup error:', e);
-        openTypeformFallback();
-      }
+    var overlay = document.getElementById('tf-overlay');
+    var iframe = document.getElementById('tf-iframe');
+    var src = 'https://form.typeform.com/to/kAKv5XaO';
+    if (window._lastFlowSummary) {
+      src += '?pre_chat_path=' + encodeURIComponent(window._lastFlowSummary);
     }
-
-    function openTypeformFallback() {
-      /* Full-screen iframe fallback */
-      var overlay = document.createElement('div');
-      overlay.id = 'tf-fallback-overlay';
-      overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;';
-      overlay.innerHTML = '<div style="background:#fff;border-radius:16px;overflow:hidden;width:92%;max-width:600px;height:580px;position:relative;">' +
-        '<button onclick="document.getElementById(\'tf-fallback-overlay\').remove();window.typeformShown=false;" style="position:absolute;top:10px;right:12px;z-index:10;background:#eee;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:1rem;">✕</button>' +
-        '<iframe src="https://form.typeform.com/to/kAKv5XaO" style="width:100%;height:100%;border:none;" allow="camera;microphone;autoplay;encrypted-media;"></iframe>' +
-        '</div>';
-      document.body.appendChild(overlay);
-    }
-
-    if (window.tf && window.tf.createPopup) {
-      doOpen();
-    } else {
-      var attempts = 0;
-      var wait = setInterval(function() {
-        attempts++;
-        if (window.tf && window.tf.createPopup) {
-          clearInterval(wait);
-          doOpen();
-        }
-        if (attempts > 15) {
-          clearInterval(wait);
-          openTypeformFallback();
-        }
-      }, 300);
-    }
+    iframe.src = src;
+    overlay.style.display = 'flex';
   }
 
   function closeTypeform() {
-    if (typeformPopup) typeformPopup.close();
-    var fallback = document.getElementById('tf-fallback-overlay');
-    if (fallback) fallback.remove();
+    document.getElementById('tf-overlay').style.display = 'none';
+    document.getElementById('tf-iframe').src = '';
     typeformShown = false;
-    typeformPopup = null;
   }
+
+  /* Close on backdrop click */
+  document.getElementById('tf-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeTypeform();
+  });
 </script>
 
 </body>
