@@ -667,7 +667,10 @@
           window.fcWidget.on('conversation:resolved', function(resp) {
             console.log('Conversation resolved event:', JSON.stringify(resp));
 
-            /* Extract conversation ID from event — this is what actually works */
+            /* Set resolved_at immediately */
+            window._resolvedAt = new Date().toISOString();
+
+            /* Extract conversation ID from event */
             try {
               var conv = resp && resp.data && resp.data.conversation;
               if (conv && conv.conversationId) {
@@ -677,9 +680,15 @@
               if (conv && conv.channelId) {
                 window._channelId = String(conv.channelId);
               }
+              if (resp.data && resp.data.resolvedAt) {
+                window._resolvedAt = resp.data.resolvedAt;
+              }
             } catch(e) {}
 
-            setTimeout(showTypeform, 500);
+            console.log('Before showSurvey — conversation_id:', window._conversationId, 'resolved_at:', window._resolvedAt);
+
+            /* Delay slightly to ensure all variables are set */
+            setTimeout(showSurvey, 800);
           });
         } catch(e) {}
 
@@ -751,16 +760,19 @@
     /* Build Tally URL with hidden fields */
     var params = [];
     if (window._conversationId)                        params.push('conversation_id='   + encodeURIComponent(window._conversationId));
+    if (window._resolvedAt)                             params.push('resolved_at='       + encodeURIComponent(window._resolvedAt));
     if (window._lastFlowSummary)                       params.push('pre_chat_path='     + encodeURIComponent(window._lastFlowSummary));
     if (window.flowPath && window.flowPath[0])         params.push('pre_chat_topic='    + encodeURIComponent(window.flowPath[0]));
     if (window._agentName)                             params.push('agent_name='        + encodeURIComponent(window._agentName));
     if (window._fcUser && window._fcUser.firstName)    params.push('first_name='        + encodeURIComponent(window._fcUser.firstName));
     if (window._fcUser && window._fcUser.email)        params.push('customer_email='    + encodeURIComponent(window._fcUser.email));
 
-    var src = 'https://tally.so/embed/2ElxBA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1' +
-              (params.length ? '&' + params.join('&') : '');
-
+    var tallyBase = 'https://tally.so/embed/2ElxBA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1';
+    var src = tallyBase + (params.length ? '&' + params.join('&') : '');
     console.log('Tally URL:', src);
+    console.log('conversation_id:', window._conversationId);
+    console.log('resolved_at:', window._resolvedAt);
+
     document.getElementById('csat-iframe').src = src;
     document.getElementById('csat-overlay').classList.add('show');
   }
