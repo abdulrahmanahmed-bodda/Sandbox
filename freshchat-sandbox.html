@@ -640,7 +640,6 @@
                 if (!window._conversationId) {
                   window._conversationId = convId;
                   sendFlowViaAPI(convId, flowSummary);
-                  fetchConversationDetails(convId);
                 }
               }
             }).catch(function() {});
@@ -648,7 +647,7 @@
           if (pollCount >= 10) clearInterval(pollInterval);
         }, 1000);
 
-        /* Fetch user info + conversation via REST API right when widget opens */
+        /* Capture user info from widget — alias is available even without email */
         try {
           window.fcWidget.user.get().then(function(resp) {
             if (resp && resp.data) {
@@ -656,37 +655,9 @@
                 email:      resp.data.email || '',
                 firstName:  resp.data.firstName || resp.data.first_name || '',
                 lastName:   resp.data.lastName || resp.data.last_name || '',
-                alias:      resp.data.alias || '',
-                externalId: resp.data.externalId || resp.data.reference_id || ''
+                alias:      resp.data.alias || ''
               };
               console.log('User info:', window._fcUser);
-
-              /* Use alias or externalId to fetch this user's conversations */
-              var identifier = window._fcUser.externalId || window._fcUser.alias;
-              if (identifier) {
-                fetch(FC_API_HOST + '/v2/users?reference_id=' + encodeURIComponent(identifier), {
-                  headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
-                })
-                .then(function(r) { return r.json(); })
-                .then(function(d) {
-                  var user = d && d.users && d.users[0];
-                  if (user && user.id) {
-                    /* Fetch conversations for this user */
-                    return fetch(FC_API_HOST + '/v2/users/' + user.id + '/conversations', {
-                      headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
-                    });
-                  }
-                })
-                .then(function(r) { return r && r.json(); })
-                .then(function(d) {
-                  var conv = d && d.conversations && d.conversations[0];
-                  if (conv && conv.conversation_id) {
-                    window._conversationId = conv.conversation_id;
-                    console.log('Got conversation ID from user lookup:', window._conversationId);
-                  }
-                })
-                .catch(function(e) { console.log('User lookup error:', e); });
-              }
             }
           }).catch(function() {});
         } catch(e) {}
@@ -696,35 +667,19 @@
           window.fcWidget.on('conversation:resolved', function(resp) {
             console.log('Conversation resolved event:', JSON.stringify(resp));
 
-            /* Try event data first */
+            /* Extract conversation ID from event — this is what actually works */
             try {
-              var d = resp && resp.data;
-              if (d && (d.conversationId || d.conversation_id)) {
-                window._conversationId = d.conversationId || d.conversation_id;
+              var conv = resp && resp.data && resp.data.conversation;
+              if (conv && conv.conversationId) {
+                window._conversationId = String(conv.conversationId);
+                console.log('Conversation ID captured:', window._conversationId);
               }
-              if (d && d.agentName) window._agentName = d.agentName;
+              if (conv && conv.channelId) {
+                window._channelId = String(conv.channelId);
+              }
             } catch(e) {}
 
-            /* Use stored conversation ID to fetch full details */
-            if (window._conversationId) {
-              fetchConversationDetails(window._conversationId)
-                .then(function() { setTimeout(showTypeform, 500); })
-                .catch(function() { setTimeout(showTypeform, 500); });
-            } else {
-              /* Last resort: fetch most recent resolved conversation */
-              fetch(FC_API_HOST + '/v2/conversations?page=1&items_per_page=1&status=resolved', {
-                headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
-              })
-              .then(function(r) { return r.json(); })
-              .then(function(d) {
-                var conv = d && d.conversations && d.conversations[0];
-                if (conv && conv.conversation_id) {
-                  return fetchConversationDetails(conv.conversation_id);
-                }
-              })
-              .then(function() { setTimeout(showTypeform, 500); })
-              .catch(function() { setTimeout(showTypeform, 500); });
-            }
+            setTimeout(showTypeform, 500);
           });
         } catch(e) {}
 
