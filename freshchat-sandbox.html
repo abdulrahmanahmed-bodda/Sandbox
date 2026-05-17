@@ -616,14 +616,13 @@
         /* When conversation is created — store ID and send flow via REST API (works on mobile too) */
         try {
           window.fcWidget.on('conversation:created', function(resp) {
+            console.log('conversation:created full response:', JSON.stringify(resp));
             var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
             if (convId) {
-              console.log('Conversation created:', convId);
+              console.log('Conversation created ID:', convId);
               window._conversationId = convId;
-              /* Send flow summary via REST API — reliable on both desktop and mobile */
               setTimeout(function() {
                 sendFlowViaAPI(convId, flowSummary);
-                /* Also fetch full conversation details for agent name etc */
                 fetchConversationDetails(convId);
               }, 1000);
             }
@@ -649,17 +648,45 @@
           if (pollCount >= 10) clearInterval(pollInterval);
         }, 1000);
 
-        /* Fetch user info via REST API — more reliable than fcWidget.user.get() */
+        /* Fetch user info + conversation via REST API right when widget opens */
         try {
           window.fcWidget.user.get().then(function(resp) {
             if (resp && resp.data) {
               window._fcUser = {
-                email:     resp.data.email || '',
-                firstName: resp.data.firstName || '',
-                lastName:  resp.data.lastName || '',
-                alias:     resp.data.alias || ''
+                email:      resp.data.email || '',
+                firstName:  resp.data.firstName || resp.data.first_name || '',
+                lastName:   resp.data.lastName || resp.data.last_name || '',
+                alias:      resp.data.alias || '',
+                externalId: resp.data.externalId || resp.data.reference_id || ''
               };
-              console.log('User info captured:', window._fcUser);
+              console.log('User info:', window._fcUser);
+
+              /* Use alias or externalId to fetch this user's conversations */
+              var identifier = window._fcUser.externalId || window._fcUser.alias;
+              if (identifier) {
+                fetch(FC_API_HOST + '/v2/users?reference_id=' + encodeURIComponent(identifier), {
+                  headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                  var user = d && d.users && d.users[0];
+                  if (user && user.id) {
+                    /* Fetch conversations for this user */
+                    return fetch(FC_API_HOST + '/v2/users/' + user.id + '/conversations', {
+                      headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
+                    });
+                  }
+                })
+                .then(function(r) { return r && r.json(); })
+                .then(function(d) {
+                  var conv = d && d.conversations && d.conversations[0];
+                  if (conv && conv.conversation_id) {
+                    window._conversationId = conv.conversation_id;
+                    console.log('Got conversation ID from user lookup:', window._conversationId);
+                  }
+                })
+                .catch(function(e) { console.log('User lookup error:', e); });
+              }
             }
           }).catch(function() {});
         } catch(e) {}
