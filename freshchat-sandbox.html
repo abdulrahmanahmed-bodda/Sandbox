@@ -552,8 +552,36 @@
       })
     })
     .then(function(r) { return r.json(); })
-    .then(function(d) { console.log('Flow sent:', d); })
+    .then(function(d) {
+      console.log('Flow sent via API:', d);
+      /* Store conversation ID from successful send response */
+      if (d && d.conversation_id && !window._conversationId) {
+        window._conversationId = d.conversation_id;
+        console.log('Conversation ID from send response:', window._conversationId);
+      }
+    })
     .catch(function(e) { console.error('Flow send error:', e); });
+  }
+
+  /* Fetch full conversation details from REST API */
+  function fetchConversationDetails(convId) {
+    return fetch(FC_API_HOST + '/v2/conversations/' + convId, {
+      headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      console.log('Conversation details:', d);
+      if (d && d.conversation_id) {
+        window._conversationId = d.conversation_id;
+        if (d.assigned_agent) {
+          window._agentName = (d.assigned_agent.first_name || '') + ' ' + (d.assigned_agent.last_name || '');
+          window._agentName = window._agentName.trim();
+        }
+        if (d.channel && d.channel.name) window._channelName = d.channel.name;
+      }
+      return d;
+    })
+    .catch(function(e) { console.error('Fetch conversation error:', e); });
   }
 
   window.fcSettings = {
@@ -585,15 +613,19 @@
 
         window.fcWidget.show();
 
-        /* When conversation is created grab the ID and POST via REST API */
-        /* This works on desktop AND mobile reliably */
+        /* When conversation is created — store ID and send flow via REST API (works on mobile too) */
         try {
           window.fcWidget.on('conversation:created', function(resp) {
             var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
             if (convId) {
               console.log('Conversation created:', convId);
               window._conversationId = convId;
-              setTimeout(function() { sendFlowViaAPI(convId, flowSummary); }, 800);
+              /* Send flow summary via REST API — reliable on both desktop and mobile */
+              setTimeout(function() {
+                sendFlowViaAPI(convId, flowSummary);
+                /* Also fetch full conversation details for agent name etc */
+                fetchConversationDetails(convId);
+              }, 1000);
             }
           });
         } catch(e) {}
@@ -606,8 +638,11 @@
             window.fcWidget.getConversationId().then(function(convId) {
               if (convId) {
                 clearInterval(pollInterval);
-                window._conversationId = convId;
-                sendFlowViaAPI(convId, flowSummary);
+                if (!window._conversationId) {
+                  window._conversationId = convId;
+                  sendFlowViaAPI(convId, flowSummary);
+                  fetchConversationDetails(convId);
+                }
               }
             }).catch(function() {});
           } catch(e) {}
@@ -632,37 +667,37 @@
         /* Show Typeform when conversation is resolved */
         try {
           window.fcWidget.on('conversation:resolved', function(resp) {
+            console.log('Conversation resolved event:', JSON.stringify(resp));
 
             /* Try event data first */
             try {
               var d = resp && resp.data;
-              if (d && (d.conversationId || d.conversation_id)) window._conversationId = d.conversationId || d.conversation_id;
+              if (d && (d.conversationId || d.conversation_id)) {
+                window._conversationId = d.conversationId || d.conversation_id;
+              }
               if (d && d.agentName) window._agentName = d.agentName;
-              console.log('Resolved event data:', JSON.stringify(d));
             } catch(e) {}
 
-            /* Fetch conversation details from REST API to get conv ID + agent name */
-            fetch(FC_API_HOST + '/v2/conversations?page=1&items_per_page=1&status=resolved', {
-              headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(d) {
-              var conv = d && d.conversations && d.conversations[0];
-              if (conv) {
-                if (conv.conversation_id && !window._conversationId) {
-                  window._conversationId = conv.conversation_id;
+            /* Use stored conversation ID to fetch full details */
+            if (window._conversationId) {
+              fetchConversationDetails(window._conversationId)
+                .then(function() { setTimeout(showTypeform, 500); })
+                .catch(function() { setTimeout(showTypeform, 500); });
+            } else {
+              /* Last resort: fetch most recent resolved conversation */
+              fetch(FC_API_HOST + '/v2/conversations?page=1&items_per_page=1&status=resolved', {
+                headers: { 'Authorization': 'Bearer ' + FC_API_TOKEN }
+              })
+              .then(function(r) { return r.json(); })
+              .then(function(d) {
+                var conv = d && d.conversations && d.conversations[0];
+                if (conv && conv.conversation_id) {
+                  return fetchConversationDetails(conv.conversation_id);
                 }
-                if (conv.assigned_agent && conv.assigned_agent.first_name && !window._agentName) {
-                  window._agentName = conv.assigned_agent.first_name + ' ' + (conv.assigned_agent.last_name || '');
-                }
-                console.log('Conversation from API:', conv.conversation_id, 'Agent:', window._agentName);
-              }
-              setTimeout(showTypeform, 500);
-            })
-            .catch(function(err) {
-              console.error('API error:', err);
-              setTimeout(showTypeform, 500);
-            });
+              })
+              .then(function() { setTimeout(showTypeform, 500); })
+              .catch(function() { setTimeout(showTypeform, 500); });
+            }
           });
         } catch(e) {}
 
