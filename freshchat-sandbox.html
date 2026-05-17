@@ -660,6 +660,9 @@
     var popup = document.getElementById('typeform-popup');
     popup.style.display = 'flex';
 
+    /* Clear and re-embed Typeform fresh each time */
+    document.getElementById('typeform-embed-container').innerHTML = '';
+
     /* Embed Typeform into the container */
     if (window.tf && window.tf.createWidget) {
       window.tf.createWidget('kAKv5XaO', {
@@ -676,6 +679,8 @@
 
   function closeTypeform() {
     document.getElementById('typeform-popup').style.display = 'none';
+    document.getElementById('typeform-embed-container').innerHTML = '';
+    typeformShown = false; /* Reset so it shows again on next resolution */
   }
 
   /* Close on backdrop click */
