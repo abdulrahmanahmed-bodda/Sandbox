@@ -521,6 +521,7 @@
 
   function startChat(context) {
     var summary = buildFlowSummary();
+    window._lastFlowSummary = summary;
     closePrechat();
     if (window.openFreshchat) {
       window.openFreshchat(summary);
@@ -533,6 +534,28 @@
 </script>
 
 <script>
+  var FC_API_TOKEN = "eyJraWQiOiJjdXN0b20tb2F1dGgta2V5aWQiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmcmVzaGNoYXQiLCJhdWQiOiJmcmVzaGNoYXQiLCJpYXQiOjE3Nzg3OTQ5NDMsInNjb3BlIjoiYWdlbnQ6cmVhZCBhZ2VudDpjcmVhdGUgYWdlbnQ6dXBkYXRlIGFnZW50OmRlbGV0ZSBjb252ZXJzYXRpb246Y3JlYXRlIGNvbnZlcnNhdGlvbjpyZWFkIGNvbnZlcnNhdGlvbjp1cGRhdGUgbWVzc2FnZTpjcmVhdGUgbWVzc2FnZTpnZXQgYmlsbGluZzp1cGRhdGUgcmVwb3J0czpmZXRjaCByZXBvcnRzOmV4dHJhY3QgcmVwb3J0czpyZWFkIHJlcG9ydHM6ZXh0cmFjdDpyZWFkIGFjY291bnQ6cmVhZCBkYXNoYm9hcmQ6cmVhZCB1c2VyOnJlYWQgdXNlcjpjcmVhdGUgdXNlcjp1cGRhdGUgdXNlcjpkZWxldGUgb3V0Ym91bmRtZXNzYWdlOnNlbmQgb3V0Ym91bmRtZXNzYWdlOmdldCBtZXNzYWdpbmctY2hhbm5lbHM6bWVzc2FnZTpzZW5kIG1lc3NhZ2luZy1jaGFubmVsczptZXNzYWdlOmdldCBtZXNzYWdpbmctY2hhbm5lbHM6dGVtcGxhdGU6Y3JlYXRlIG1lc3NhZ2luZy1jaGFubmVsczp0ZW1wbGF0ZTpnZXQgZmlsdGVyaW5ib3g6cmVhZCBmaWx0ZXJpbmJveDpjb3VudDpyZWFkIHJvbGU6cmVhZCBpbWFnZTp1cGxvYWQiLCJ0eXAiOiJCZWFyZXIiLCJjbGllbnRJZCI6ImZjLTdmOGZmNDFmLTAwN2ItNDA0YS05ZDI1LWYwOGMzZDBkYjUyNCIsInN1YiI6ImZhMWJjMDg1LWMwODktNGFkMS04YzdiLWMxMzBhY2U2MjYzNyIsImp0aSI6ImVhOTEzOGQxLTZhYzAtNDg4OC1hYmE4LTA3NmRhNmY4NGM0ZCIsImV4cCI6MjA5NDQxNDE0M30.OShqwfrNQT-ayCRBWLUpjx-nmPd885txPSgUtP1IQK4";
+  var FC_API_HOST  = "https://api.freshchat.com";
+
+  /* POST message via REST API — works on all devices including mobile */
+  function sendFlowViaAPI(conversationId, flowSummary) {
+    fetch(FC_API_HOST + '/v2/conversations/' + conversationId + '/messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + FC_API_TOKEN,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message_type: 'normal',
+        actor_type: 'system',
+        message_parts: [{ text: { content: flowSummary } }]
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { console.log('Flow sent:', d); })
+    .catch(function(e) { console.error('Flow send error:', e); });
+  }
+
   window.fcSettings = {
     token: "259d6c03-7a44-45ac-bd57-2a43ba360080",
     host: "https://wchat-fs.freshchat.com",
@@ -547,40 +570,54 @@
     function tryOpen() {
       if (window.fcWidget && window.fcWidget.isInitialized()) {
 
-        /* Map flow as user custom properties — visible in agent contact panel */
+        /* Set user meta visible in agent contact panel */
         try {
-          window.fcWidget.user.setProperties({
-            cf_pre_chat_topic:     flowPath[0] || 'General',
-            cf_pre_chat_subtopic:  flowPath[1] || '',
-            cf_pre_chat_detail:    flowPath[2] || '',
-            cf_pre_chat_path:      flowSummary
+          window.fcWidget.user.setMeta({
+            pre_chat_topic:    flowPath[0] || '',
+            pre_chat_question: flowPath[1] || '',
+            pre_chat_path:     flowSummary
           });
         } catch(e) {}
 
-        /* Open widget with flow summary pre-filled as the first message */
-        try {
-          window.fcWidget.open({
-            replyText: flowSummary
-          });
-        } catch(e) {
-          window.fcWidget.open();
-        }
+        /* Open on correct topic */
+        try { window.fcWidget.open({ topic: 'Chat with us' }); }
+        catch(e) { window.fcWidget.open(); }
 
         window.fcWidget.show();
 
-        /* Also send as a system/private note via track event */
+        /* When conversation is created grab the ID and POST via REST API */
+        /* This works on desktop AND mobile reliably */
         try {
-          window.fcWidget.track('pre_chat_flow_completed', {
-            topic:    flowPath[0] || '',
-            subtopic: flowPath[1] || '',
-            detail:   flowPath[2] || '',
-            full_path: flowSummary
+          window.fcWidget.on('conversation:created', function(resp) {
+            var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
+            if (convId) {
+              console.log('Conversation created:', convId);
+              setTimeout(function() { sendFlowViaAPI(convId, flowSummary); }, 800);
+            }
           });
         } catch(e) {}
 
+        /* Fallback: poll getConversationId every second for up to 10s */
+        var pollCount = 0;
+        var pollInterval = setInterval(function() {
+          pollCount++;
+          try {
+            window.fcWidget.getConversationId().then(function(convId) {
+              if (convId) {
+                clearInterval(pollInterval);
+                sendFlowViaAPI(convId, flowSummary);
+              }
+            }).catch(function() {});
+          } catch(e) {}
+          if (pollCount >= 10) clearInterval(pollInterval);
+        }, 1000);
+
         window.fcWidget.on('widget:closed', function() {
+          clearInterval(pollInterval);
           window.fcWidget.hide();
           document.getElementById('fc-launcher').classList.remove('hidden');
+          /* Show Typeform survey after chat closes */
+          setTimeout(showTypeform, 600);
         });
 
       } else {
@@ -591,6 +628,56 @@
   };
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
+
+<!-- Typeform Embed -->
+<script src="//embed.typeform.com/next/embed.js"></script>
+<link rel="stylesheet" href="//embed.typeform.com/next/css/popup.css"/>
+
+<div id="typeform-popup" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;overflow:hidden;width:92%;max-width:560px;height:540px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.3);animation:popUp 0.35s cubic-bezier(.34,1.56,.64,1);">
+    <div style="background:linear-gradient(135deg,#E30613,#a80000);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span style="font-size:1.2rem;">⭐</span>
+        <span style="color:#fff;font-family:Syne,sans-serif;font-weight:700;font-size:0.95rem;">How was your experience?</span>
+      </div>
+      <button onclick="closeTypeform()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;width:28px;height:28px;border-radius:50%;font-size:0.85rem;cursor:pointer;line-height:28px;text-align:center;">✕</button>
+    </div>
+    <div id="typeform-embed-container" style="width:100%;height:calc(100% - 56px);"></div>
+  </div>
+</div>
+
+<script>
+  var typeformShown = false;
+
+  function showTypeform() {
+    if (typeformShown) return;
+    typeformShown = true;
+    var popup = document.getElementById('typeform-popup');
+    popup.style.display = 'flex';
+
+    /* Embed Typeform into the container */
+    if (window.tf && window.tf.createWidget) {
+      window.tf.createWidget('kAKv5XaO', {
+        container: document.getElementById('typeform-embed-container'),
+        hidden: { pre_chat_path: window._lastFlowSummary || '' },
+        onSubmit: function() { setTimeout(closeTypeform, 1500); }
+      });
+    } else {
+      /* Fallback iframe */
+      document.getElementById('typeform-embed-container').innerHTML =
+        '<iframe src="https://form.typeform.com/to/kAKv5XaO" style="width:100%;height:100%;border:none;" allow="camera; microphone; autoplay; encrypted-media;"></iframe>';
+    }
+  }
+
+  function closeTypeform() {
+    document.getElementById('typeform-popup').style.display = 'none';
+  }
+
+  /* Close on backdrop click */
+  document.getElementById('typeform-popup').addEventListener('click', function(e) {
+    if (e.target === this) closeTypeform();
+  });
+</script>
 
 </body>
 </html>
