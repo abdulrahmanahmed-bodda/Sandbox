@@ -232,7 +232,8 @@
 </footer>
 
 <!-- Custom launcher -->
-<button onclick="showTypeform()" style="position:fixed;bottom:24px;left:24px;z-index:9999;background:#E30613;color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;cursor:pointer;">🧪 Test Typeform</button>
+<button id="fc-launcher" onclick="openPrechat()">💬 Chat with us</button>
+<button onclick="showTypeform()" style="position:fixed;bottom:24px;left:24px;z-index:9999;background:#E30613;color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;cursor:pointer;font-family:DM Sans,sans-serif;">🧪 Test Survey</button>
 
 <!-- Pre-chat overlay -->
 <div id="prechat-overlay">
@@ -635,7 +636,7 @@
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
 
 <!-- Typeform Popup SDK -->
-<script src="//embed.typeform.com/next/embed.js"></script>
+<script src="https://embed.typeform.com/next/embed.js"></script>
 
 <script>
   var typeformShown = false;
@@ -644,10 +645,8 @@
   function showTypeform() {
     if (typeformShown) return;
     typeformShown = true;
-    console.log('showTypeform called, tf:', typeof window.tf);
 
     function doOpen() {
-      console.log('doOpen called, tf.createPopup:', typeof window.tf.createPopup);
       try {
         typeformPopup = window.tf.createPopup('kAKv5XaO', {
           hidden: { pre_chat_path: window._lastFlowSummary || '' },
@@ -659,32 +658,37 @@
           }
         });
         typeformPopup.open();
-        console.log('Typeform popup opened');
       } catch(e) {
-        console.error('Typeform error:', e);
-        /* Fallback: open in new tab */
-        window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
-        typeformShown = false;
+        console.error('Typeform createPopup error:', e);
+        openTypeformFallback();
       }
     }
 
-    /* Wait for SDK to be ready */
+    function openTypeformFallback() {
+      /* Full-screen iframe fallback */
+      var overlay = document.createElement('div');
+      overlay.id = 'tf-fallback-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;';
+      overlay.innerHTML = '<div style="background:#fff;border-radius:16px;overflow:hidden;width:92%;max-width:600px;height:580px;position:relative;">' +
+        '<button onclick="document.getElementById(\'tf-fallback-overlay\').remove();window.typeformShown=false;" style="position:absolute;top:10px;right:12px;z-index:10;background:#eee;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:1rem;">✕</button>' +
+        '<iframe src="https://form.typeform.com/to/kAKv5XaO" style="width:100%;height:100%;border:none;" allow="camera;microphone;autoplay;encrypted-media;"></iframe>' +
+        '</div>';
+      document.body.appendChild(overlay);
+    }
+
     if (window.tf && window.tf.createPopup) {
       doOpen();
     } else {
       var attempts = 0;
       var wait = setInterval(function() {
         attempts++;
-        console.log('Waiting for tf SDK... attempt', attempts);
         if (window.tf && window.tf.createPopup) {
           clearInterval(wait);
           doOpen();
         }
-        if (attempts > 20) {
+        if (attempts > 15) {
           clearInterval(wait);
-          console.log('tf SDK not available, opening in new tab');
-          window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
-          typeformShown = false;
+          openTypeformFallback();
         }
       }, 300);
     }
@@ -692,6 +696,8 @@
 
   function closeTypeform() {
     if (typeformPopup) typeformPopup.close();
+    var fallback = document.getElementById('tf-fallback-overlay');
+    if (fallback) fallback.remove();
     typeformShown = false;
     typeformPopup = null;
   }
