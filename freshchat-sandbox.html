@@ -634,59 +634,40 @@
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
 
-<!-- Typeform Embed -->
+<!-- Typeform Popup SDK -->
 <script src="//embed.typeform.com/next/embed.js"></script>
-<link rel="stylesheet" href="//embed.typeform.com/next/css/popup.css"/>
-
-<div id="typeform-popup" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:20px;overflow:hidden;width:92%;max-width:560px;height:540px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.3);animation:popUp 0.35s cubic-bezier(.34,1.56,.64,1);">
-    <div style="background:linear-gradient(135deg,#E30613,#a80000);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:0.6rem;">
-        <span style="font-size:1.2rem;">⭐</span>
-        <span style="color:#fff;font-family:Syne,sans-serif;font-weight:700;font-size:0.95rem;">How was your experience?</span>
-      </div>
-      <button onclick="closeTypeform()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;width:28px;height:28px;border-radius:50%;font-size:0.85rem;cursor:pointer;line-height:28px;text-align:center;">✕</button>
-    </div>
-    <div id="typeform-embed-container" style="width:100%;height:calc(100% - 56px);"></div>
-  </div>
-</div>
 
 <script>
   var typeformShown = false;
+  var typeformPopup = null;
 
   function showTypeform() {
     if (typeformShown) return;
     typeformShown = true;
-    var popup = document.getElementById('typeform-popup');
-    popup.style.display = 'flex';
 
-    /* Clear and re-embed Typeform fresh each time */
-    document.getElementById('typeform-embed-container').innerHTML = '';
-
-    /* Embed Typeform into the container */
-    if (window.tf && window.tf.createWidget) {
-      window.tf.createWidget('kAKv5XaO', {
-        container: document.getElementById('typeform-embed-container'),
+    if (window.tf && window.tf.createPopup) {
+      typeformPopup = window.tf.createPopup('kAKv5XaO', {
         hidden: { pre_chat_path: window._lastFlowSummary || '' },
-        onSubmit: function() { setTimeout(closeTypeform, 1500); }
+        onClose: function() { typeformShown = false; typeformPopup = null; },
+        onSubmit: function() {
+          setTimeout(function() {
+            if (typeformPopup) { typeformPopup.close(); }
+          }, 1500);
+        }
       });
+      typeformPopup.open();
     } else {
-      /* Fallback iframe */
-      document.getElementById('typeform-embed-container').innerHTML =
-        '<iframe src="https://form.typeform.com/to/kAKv5XaO" style="width:100%;height:100%;border:none;" allow="camera; microphone; autoplay; encrypted-media;"></iframe>';
+      /* Fallback: open in new tab */
+      window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
+      typeformShown = false;
     }
   }
 
   function closeTypeform() {
-    document.getElementById('typeform-popup').style.display = 'none';
-    document.getElementById('typeform-embed-container').innerHTML = '';
-    typeformShown = false; /* Reset so it shows again on next resolution */
+    if (typeformPopup) { typeformPopup.close(); }
+    typeformShown = false;
+    typeformPopup = null;
   }
-
-  /* Close on backdrop click */
-  document.getElementById('typeform-popup').addEventListener('click', function(e) {
-    if (e.target === this) closeTypeform();
-  });
 </script>
 
 </body>
