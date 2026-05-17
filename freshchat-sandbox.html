@@ -693,7 +693,7 @@
         if (window._fcUser.lastName)  params.push('last_name='      + encodeURIComponent(window._fcUser.lastName));
       }
 
-      var src = 'https://form.typeform.com/to/kAKv5XaO' + (params.length ? '#' + params.join('&') : '');
+      var src = 'https://form.typeform.com/to/kAKv5XaO?typeform-welcome=0' + (params.length ? '#' + params.join('&') : '');
       console.log('Typeform URL:', src);
       iframe.src = src;
       overlay.style.display = 'flex';
