@@ -593,6 +593,7 @@
             var convId = resp && resp.data && (resp.data.conversationId || resp.data.conversation_id);
             if (convId) {
               console.log('Conversation created:', convId);
+              window._conversationId = convId;
               setTimeout(function() { sendFlowViaAPI(convId, flowSummary); }, 800);
             }
           });
@@ -606,12 +607,27 @@
             window.fcWidget.getConversationId().then(function(convId) {
               if (convId) {
                 clearInterval(pollInterval);
+                window._conversationId = convId;
                 sendFlowViaAPI(convId, flowSummary);
               }
             }).catch(function() {});
           } catch(e) {}
           if (pollCount >= 10) clearInterval(pollInterval);
         }, 1000);
+
+        /* Also capture user info for Typeform */
+        try {
+          window.fcWidget.user.get(function(resp) {
+            if (resp && resp.data) {
+              window._fcUser = {
+                email:     resp.data.email || '',
+                firstName: resp.data.firstName || '',
+                lastName:  resp.data.lastName || '',
+                phone:     resp.data.phone || ''
+              };
+            }
+          });
+        } catch(e) {}
 
         /* Show Typeform when conversation is resolved — no need to close widget */
         try {
@@ -657,10 +673,20 @@
     typeformShown = true;
     var overlay = document.getElementById('tf-overlay');
     var iframe = document.getElementById('tf-iframe');
-    var src = 'https://form.typeform.com/to/kAKv5XaO';
-    if (window._lastFlowSummary) {
-      src += '?pre_chat_path=' + encodeURIComponent(window._lastFlowSummary);
+
+    /* Build URL with all Freshchat data as hidden fields */
+    var params = [];
+    if (window._conversationId)          params.push('conversation_id='   + encodeURIComponent(window._conversationId));
+    if (window._lastFlowSummary)         params.push('pre_chat_path='     + encodeURIComponent(window._lastFlowSummary));
+    if (window.flowPath && flowPath[0])  params.push('pre_chat_topic='    + encodeURIComponent(flowPath[0]));
+    if (window.flowPath && flowPath[1])  params.push('pre_chat_question=' + encodeURIComponent(flowPath[1] || ''));
+    if (window._fcUser) {
+      if (window._fcUser.email)      params.push('email='      + encodeURIComponent(window._fcUser.email));
+      if (window._fcUser.firstName)  params.push('first_name=' + encodeURIComponent(window._fcUser.firstName));
+      if (window._fcUser.lastName)   params.push('last_name='  + encodeURIComponent(window._fcUser.lastName));
     }
+
+    var src = 'https://form.typeform.com/to/kAKv5XaO' + (params.length ? '#' + params.join('&') : '');
     iframe.src = src;
     overlay.style.display = 'flex';
   }
