@@ -644,27 +644,54 @@
   function showTypeform() {
     if (typeformShown) return;
     typeformShown = true;
+    console.log('showTypeform called, tf:', typeof window.tf);
 
+    function doOpen() {
+      console.log('doOpen called, tf.createPopup:', typeof window.tf.createPopup);
+      try {
+        typeformPopup = window.tf.createPopup('kAKv5XaO', {
+          hidden: { pre_chat_path: window._lastFlowSummary || '' },
+          onClose: function() { typeformShown = false; typeformPopup = null; },
+          onSubmit: function() {
+            setTimeout(function() {
+              if (typeformPopup) typeformPopup.close();
+            }, 1500);
+          }
+        });
+        typeformPopup.open();
+        console.log('Typeform popup opened');
+      } catch(e) {
+        console.error('Typeform error:', e);
+        /* Fallback: open in new tab */
+        window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
+        typeformShown = false;
+      }
+    }
+
+    /* Wait for SDK to be ready */
     if (window.tf && window.tf.createPopup) {
-      typeformPopup = window.tf.createPopup('kAKv5XaO', {
-        hidden: { pre_chat_path: window._lastFlowSummary || '' },
-        onClose: function() { typeformShown = false; typeformPopup = null; },
-        onSubmit: function() {
-          setTimeout(function() {
-            if (typeformPopup) { typeformPopup.close(); }
-          }, 1500);
-        }
-      });
-      typeformPopup.open();
+      doOpen();
     } else {
-      /* Fallback: open in new tab */
-      window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
-      typeformShown = false;
+      var attempts = 0;
+      var wait = setInterval(function() {
+        attempts++;
+        console.log('Waiting for tf SDK... attempt', attempts);
+        if (window.tf && window.tf.createPopup) {
+          clearInterval(wait);
+          doOpen();
+        }
+        if (attempts > 20) {
+          clearInterval(wait);
+          console.log('tf SDK not available, opening in new tab');
+          window.open('https://form.typeform.com/to/kAKv5XaO', '_blank');
+          typeformShown = false;
+        }
+      }, 300);
     }
   }
 
   function closeTypeform() {
-    if (typeformPopup) { typeformPopup.close(); }
+    if (typeformPopup) typeformPopup.close();
     typeformShown = false;
     typeformPopup = null;
   }
