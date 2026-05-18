@@ -667,6 +667,39 @@
           window.fcWidget.on('conversation:resolved', function(resp) {
             console.log('Conversation resolved event:', JSON.stringify(resp));
 
+            /* ── Business hours check ──────────────────────────────
+               Only show survey during business hours
+               Timezone: Africa/Cairo (UTC+3)
+               Hours: Sun-Thu 9:00 AM - 6:00 PM
+               Adjust BUSINESS_HOURS to match your actual hours  */
+            var BUSINESS_HOURS = {
+              timezone:  'Africa/Cairo',
+              days:      [0, 1, 2, 3, 4, 6], /* 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 6=Sat */
+              startHour: 10,
+              endHour:   18
+            };
+
+            function isWithinBusinessHours() {
+              try {
+                var now = new Date();
+                var localTime = new Date(now.toLocaleString('en-US', { timeZone: BUSINESS_HOURS.timezone }));
+                var day  = localTime.getDay();
+                var hour = localTime.getHours();
+                var inDay  = BUSINESS_HOURS.days.indexOf(day) !== -1;
+                var inHour = hour >= BUSINESS_HOURS.startHour && hour < BUSINESS_HOURS.endHour;
+                console.log('Business hours check — day:', day, 'hour:', hour, 'inDay:', inDay, 'inHour:', inHour);
+                return inDay && inHour;
+              } catch(e) {
+                return true; /* If check fails, show survey anyway */
+              }
+            }
+
+            if (!isWithinBusinessHours()) {
+              console.log('Outside business hours — survey skipped');
+              return;
+            }
+            /* ─────────────────────────────────────────────────────── */
+
             /* Reset so survey shows again */
             window._csatShown = false;
 
