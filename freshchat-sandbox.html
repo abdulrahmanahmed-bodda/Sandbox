@@ -730,55 +730,65 @@
 </script>
 <script src="https://wchat-fs.freshchat.com/js/widget.js" async></script>
 
-<!-- Tally CSAT Survey Popup -->
+<!-- Survey widget replaces Freshchat in bottom right -->
 <style>
-  #csat-overlay {
-    display: none; position: fixed; inset: 0; z-index: 99999;
-    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
-    align-items: center; justify-content: center;
-  }
-  #csat-overlay.show { display: flex; }
-  #csat-box {
-    background: #fff; border-radius: 20px; overflow: hidden;
-    width: 92%; max-width: 480px; height: 580px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+  #csat-widget {
+    display: none;
+    position: fixed;
+    bottom: 15px; right: 15px;
+    z-index: 99999;
+    width: 380px; height: 580px;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    flex-direction: column;
     animation: popUp 0.35s cubic-bezier(.34,1.56,.64,1);
-    display: flex; flex-direction: column;
   }
-  #csat-header {
+  #csat-widget.show { display: flex; }
+  #csat-widget-header {
     background: linear-gradient(135deg, #E30613, #a80000);
-    padding: 1rem 1.25rem;
+    padding: 0.9rem 1.1rem;
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0;
   }
-  #csat-header span { color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.92rem; }
-  #csat-header button {
-    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; width: 28px; height: 28px; border-radius: 50%;
-    font-size: 0.85rem; cursor: pointer; line-height: 28px; text-align: center;
-    flex-shrink: 0;
+  #csat-widget-header .hw-title {
+    color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 0.4rem;
   }
-  #csat-iframe {
-    width: 100%; flex: 1; border: none;
+  #csat-widget-close {
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; width: 26px; height: 26px; border-radius: 50%;
+    font-size: 0.8rem; cursor: pointer; line-height: 26px; text-align: center; flex-shrink: 0;
+  }
+  #csat-iframe { flex: 1; width: 100%; border: none; background: #fff; }
+  @media (max-width: 480px) {
+    #csat-widget { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
   }
 </style>
 
-<div id="csat-overlay">
-  <div id="csat-box">
-    <div id="csat-header">
-      <span>⭐ How was your experience?</span>
-      <button onclick="closeSurvey()">✕</button>
-    </div>
-    <iframe id="csat-iframe" src="" allow="camera; microphone; autoplay; encrypted-media;"></iframe>
+<div id="csat-widget">
+  <div id="csat-widget-header">
+    <div class="hw-title">⭐ How was your experience?</div>
+    <button id="csat-widget-close" onclick="closeSurvey()">✕</button>
   </div>
+  <iframe id="csat-iframe" src="" allow="camera; microphone; autoplay; encrypted-media;"></iframe>
 </div>
 
 <script>
-  var csatShown = false;
-
   function showSurvey() {
     if (window._csatShown) return;
     window._csatShown = true;
+
+    /* Hide Freshchat widget — survey takes its place in bottom right */
+    try {
+      if (window.fcWidget) {
+        window.fcWidget.close();
+        window.fcWidget.hide();
+      }
+    } catch(e) {}
+    var fcFrame = document.getElementById('fc_frame');
+    if (fcFrame) fcFrame.style.display = 'none';
+    var launcher = document.getElementById('fc-launcher');
+    if (launcher) launcher.classList.add('hidden');
 
     /* Build Tally URL with all hidden fields */
     var params = [];
@@ -791,39 +801,34 @@
     if (window._fcUser && window._fcUser.firstName) params.push('first_name='      + encodeURIComponent(window._fcUser.firstName));
     if (window._fcUser && window._fcUser.email)     params.push('customer_email='  + encodeURIComponent(window._fcUser.email));
 
-    var tallyBase = 'https://tally.so/embed/2ElxBA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1';
-    var src = tallyBase + (params.length ? '&' + params.join('&') : '');
+    var src = 'https://tally.so/embed/2ElxBA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1' +
+              (params.length ? '&' + params.join('&') : '');
     console.log('Tally URL:', src);
     console.log('conversation_id:', window._conversationId);
     console.log('resolved_at:', window._resolvedAt);
-    console.log('agent_name:', window._agentName);
-    console.log('group_name:', window._groupName);
 
     document.getElementById('csat-iframe').src = src;
-    document.getElementById('csat-overlay').classList.add('show');
+    document.getElementById('csat-widget').classList.add('show');
+
+    /* Auto-close after Tally submission */
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'tally-form-submitted') {
+        setTimeout(closeSurvey, 1500);
+      }
+    });
   }
 
   function closeSurvey() {
-    document.getElementById('csat-overlay').classList.remove('show');
+    document.getElementById('csat-widget').classList.remove('show');
     document.getElementById('csat-iframe').src = '';
     window._csatShown = false;
+    /* Restore launcher */
+    var launcher = document.getElementById('fc-launcher');
+    if (launcher) launcher.classList.remove('hidden');
   }
 
-  /* Replace old survey functions */
   function showTypeform() { showSurvey(); }
   function closeTypeform() { closeSurvey(); }
-
-  /* Close on backdrop click */
-  document.getElementById('csat-overlay').addEventListener('click', function(e) {
-    if (e.target === this) closeSurvey();
-  });
-
-  /* Auto-close when Tally form is submitted */
-  window.addEventListener('message', function(e) {
-    if (e.data && e.data.type === 'tally-form-submitted') {
-      setTimeout(closeSurvey, 1500);
-    }
-  });
 </script>
 
 </body>
