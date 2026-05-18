@@ -754,11 +754,6 @@
     color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
     display: flex; align-items: center; gap: 0.4rem;
   }
-  #csat-widget-close {
-    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; width: 26px; height: 26px; border-radius: 50%;
-    font-size: 0.8rem; cursor: pointer; line-height: 26px; text-align: center; flex-shrink: 0;
-  }
   #csat-iframe { flex: 1; width: 100%; border: none; background: #fff; }
   @media (max-width: 480px) {
     #csat-widget { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
@@ -768,7 +763,6 @@
 <div id="csat-widget">
   <div id="csat-widget-header">
     <div class="hw-title">⭐ How was your experience?</div>
-    <button id="csat-widget-close" onclick="closeSurvey()">✕</button>
   </div>
   <iframe id="csat-iframe" src="" allow="camera; microphone; autoplay; encrypted-media;"></iframe>
 </div>
@@ -810,10 +804,24 @@
     document.getElementById('csat-iframe').src = src;
     document.getElementById('csat-widget').classList.add('show');
 
-    /* Auto-close after Tally submission */
+    /* Listen for messages from Tally iframe */
     window.addEventListener('message', function(e) {
+      /* Auto-close after Tally submission */
       if (e.data && e.data.type === 'tally-form-submitted') {
         setTimeout(closeSurvey, 1500);
+      }
+      /* Continue Chat button selected — close survey and reopen Freshchat */
+      if (e.data && e.data.type === 'tally-button-click' &&
+          e.data.buttonLabel && e.data.buttonLabel.toLowerCase().includes('continue')) {
+        closeSurvey();
+        setTimeout(function() {
+          var fcFrame = document.getElementById('fc_frame');
+          if (fcFrame) fcFrame.style.display = '';
+          if (window.fcWidget) {
+            window.fcWidget.show();
+            window.fcWidget.open();
+          }
+        }, 300);
       }
     });
   }
@@ -825,6 +833,9 @@
     /* Restore launcher */
     var launcher = document.getElementById('fc-launcher');
     if (launcher) launcher.classList.remove('hidden');
+    /* Restore fc_frame visibility */
+    var fcFrame = document.getElementById('fc_frame');
+    if (fcFrame) fcFrame.style.display = '';
   }
 
   function showTypeform() { showSurvey(); }
